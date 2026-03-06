@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Qara'a - Al Azhar Semarang</title>
+  
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+
+  <script>
+    // Konfigurasi Tailwind Custom Theme
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Poppins', 'sans-serif'],
+          },
+          colors: {
+            'qaraa-primary': '#2563eb', // Blue 600
+            'qaraa-dark': '#1e3a8a',    // Blue 900
+            'qaraa-bg': '#f3f4f6',      // Gray 100
+            'qaraa-active': '#10b981',  // Green (untuk indikator sidebar aktif)
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-qaraa-bg font-sans text-slate-800 h-screen overflow-hidden">
+
+  <div id="login-section" class="fixed inset-0 bg-qaraa-bg z-50 flex items-center justify-center p-4">
+    <div class="w-full max-w-md bg-white rounded-xl shadow-2xl overflow-hidden transform transition-all duration-300 scale-100 opacity-100">
+      
+      <div class="bg-qaraa-primary px-6 py-5 text-white flex items-center gap-4">
+        <i class="material-icons-round text-3xl">account_circle</i>
+        <h3 class="text-xl font-semibold tracking-tight">LOGIN QARA'A</h3>
+      </div>
+      
+      <div class="p-8">
+        <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-5">
+          <div>
+            <input type="text" id="username" class="w-full px-4 py-3 rounded-lg bg-slate-50 border border-slate-300 focus:outline-none focus:ring-2 focus:ring-qaraa-primary transition duration-150 text-sm" placeholder="Ketik Username..." required>
+          </div>
+          <div class="mb-6">
+            <input type="password" id="password" class="w-full px-4 py-3 rounded-lg bg-slate-50 border border-slate-300 focus:outline-none focus:ring-2 focus:ring-qaraa-primary transition duration-150 text-sm" placeholder="Ketik Password..." required>
+          </div>
+          
+          <div class="grid grid-cols-2 gap-4 pt-2">
+            <button type="submit" id="btn-login" class="w-full bg-qaraa-primary hover:bg-qaraa-dark text-white font-semibold py-3 px-4 rounded-lg transition duration-200 shadow flex items-center justify-center gap-2">
+              <i class="material-icons-round text-sm">login</i>
+              <span>MASUK</span>
+            </button>
+            <button type="button" onclick="resetForm()" class="w-full bg-white hover:bg-red-50 text-red-600 border border-red-300 font-semibold py-3 px-4 rounded-lg transition duration-200">
+              BATAL
+            </button>
+          </div>
+        </form>
+        
+        <div id="login-msg" class="text-red-500 text-sm text-center mt-5 font-medium hidden"></div>
+        <div class="text-center mt-6 pt-4 border-t">
+          <a href="#" class="text-sm text-slate-500 hover:text-qaraa-primary transition">Lupa Password?</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="main-section" class="hidden w-full h-full flex flex-col">
+    
+    <header class="bg-qaraa-primary text-white h-16 flex items-center justify-between px-6 shadow-md z-40">
+      <div class="flex items-center gap-2">
+        <i class="material-icons-round text-3xl">menu_book</i>
+        <h1 class="text-xl font-bold tracking-tight">Qara'a <span class="font-normal opacity-75">Al Azhar</span></h1>
+      </div>
+      <div class="flex items-center gap-3 bg-white/10 py-1.5 px-3 rounded-full">
+        <img src="https://via.placeholder.com/32" alt="User" class="w-8 h-8 rounded-full border border-white/50">
+        <span id="user-info-top" class="font-medium text-sm"></span>
+        <button onclick="logout()" class="text-white/60 hover:text-red-300 transition pl-2">
+          <i class="material-icons-round text-lg">logout</i>
+        </button>
+      </div>
+    </header>
+
+    <div class="flex-1 flex overflow-hidden">
+      
+      <aside class="w-64 bg-qaraa-dark text-slate-300 h-full flex flex-col pt-6 z-30">
+        <div class="flex-1 flex flex-col gap-1 px-3">
+          
+          <a href="#" class="flex items-center gap-3.5 px-4 py-3 rounded-lg font-medium bg-white/10 text-white relative group overflow-hidden transition-all duration-200">
+            <div class="absolute left-0 top-0 bottom-0 w-1.5 bg-qaraa-active rounded-l-lg transform translate-x-0 group-hover:translate-x-0 transition-transform"></div>
+            <i class="material-icons-round text-qaraa-active">dashboard</i> 
+            <span>Beranda</span>
+          </div>
+
+          <a href="#" class="flex items-center gap-3.5 px-4 py-3 rounded-lg font-medium text-slate-400 group hover:bg-white/5 hover:text-white relative overflow-hidden transition-all duration-200">
+             <div class="absolute left-0 top-0 bottom-0 w-1.5 bg-qaraa-active rounded-l-lg transform -translate-x-full group-hover:translate-x-0 transition-transform"></div>
+            <i class="material-icons-round text-slate-500 group-hover:text-qaraa-active transition">group</i> 
+            <span>Data Murid</span>
+          </a>
+          <a href="#" class="flex items-center gap-3.5 px-4 py-3 rounded-lg font-medium text-slate-400 group hover:bg-white/5 hover:text-white relative overflow-hidden transition-all duration-200">
+            <div class="absolute left-0 top-0 bottom-0 w-1.5 bg-qaraa-active rounded-l-lg transform -translate-x-full group-hover:translate-x-0 transition-transform"></div>
+            <i class="material-icons-round text-slate-500 group-hover:text-qaraa-active transition">history_edu</i> 
+            <span>Catatan Mengaji</span>
+          </a>
+          <a href="#" class="flex items-center gap-3.5 px-4 py-3 rounded-lg font-medium text-slate-400 group hover:bg-white/5 hover:text-white relative overflow-hidden transition-all duration-200">
+            <div class="absolute left-0 top-0 bottom-0 w-1.5 bg-qaraa-active rounded-l-lg transform -translate-x-full group-hover:translate-x-0 transition-transform"></div>
+            <i class="material-icons-round text-slate-500 group-hover:text-qaraa-active transition">star</i> 
+            <span>Input Hafalan</span>
+          </a>
+        </div>
+      </aside>
+
+      <main class="flex-1 bg-qaraa-bg p-8 overflow-y-auto z-10">
+        
+        <div class="flex justify-between items-center mb-10 border-b border-slate-200 pb-5">
+          <h1 class="text-2xl font-semibold text-slate-900 tracking-tight">DASHBOARD UTAMA</h1>
+          <p class="text-sm text-slate-500">Qara'a Al Azhar Semarang</p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          
+          <div class="col-span-1 md:col-span-2 space-y-8">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-8">
+              <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 flex items-center gap-5 transition hover:shadow-lg">
+                <div class="bg-blue-100 text-blue-600 p-4 rounded-full">
+                  <i class="material-icons-round text-3xl">school</i>
+                </div>
+                <div>
+                  <p class="text-sm font-medium text-slate-500">Total Murid</p>
+                  <p class="text-3xl font-bold text-slate-900 mt-1">2</p> </div>
+              </div>
+              <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 flex items-center gap-5 transition hover:shadow-lg">
+                <div class="bg-green-100 text-green-600 p-4 rounded-full">
+                  <i class="material-icons-round text-3xl">supervisor_account</i>
+                </div>
+                <div>
+                  <p class="text-sm font-medium text-slate-500">Total Ustaz</p>
+                  <p class="text-3xl font-bold text-slate-900 mt-1">2</p> </div>
+              </div>
+            </div>
+            
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
+                <label class="block text-sm font-semibold text-slate-700 mb-2">Lihat Daftar Surah (Statis)</label>
+                <select id="in-surah" class="w-full max-w-md px-4 py-3 rounded-lg bg-slate-50 border border-slate-300 focus:outline-none focus:ring-2 focus:ring-qaraa-primary text-sm">
+                  <option value="">-- Pilih Surah --</option>
+                </select>
+            </div>
+          </div>
+
+          <div class="col-span-1">
+            <div class="bg-white p-8 rounded-xl shadow-sm border border-slate-100 flex flex-col items-center text-center transition hover:shadow-lg">
+              <img src="https://via.placeholder.com/100" alt="User Profile" class="w-24 h-24 rounded-full border-4 border-slate-100 shadow-inner mb-5">
+              <h4 id="user-info-name" class="text-xl font-semibold text-slate-900 placeholder:text-slate-400">Nama Pengguna</h4>
+              <p id="user-info-role" class="text-sm font-medium text-qaraa-primary bg-blue-50 px-3 py-1 rounded-full mt-2 mb-6">ROLE</p>
+              
+              <div class="w-full space-y-3 text-left border-t border-slate-100 pt-6">
+                <p class="text-xs text-slate-500"><span class="font-semibold text-slate-700">Username:</span> <span id="user-info-username"></span></p>
+                <p class="text-xs text-slate-500"><span class="font-semibold text-slate-700">Email:</span> ustadz@alazhar.com</p> <p class="text-xs text-slate-500"><span class="font-semibold text-slate-700">Terdaftar Sejak:</span> 2024</p> </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    // MASUKKAN URL WEB APP GOOGLE APPS SCRIPT ANDA DI SINI
+    const SCRIPT_URL = ""; 
+
+    const daftarSurah = ["Al-Fatihah","Al-Baqarah","Ali 'Imran","An-Nisa'","Al-Ma'idah","Al-An'am","Al-A'raf","Al-Anfal","At-Taubah","Yunus","Hud","Yusuf","Ar-Ra'd","Ibrahim","Al-Hijr","An-Nahl","Al-Isra'","Al-Kahf","Maryam","Taha","Al-Anbiya'","Al-Hajj","Al-Mu'minun","An-Nur","Al-Furqan","Asy-Syu'ara'","An-Naml","Al-Qasas","Al-'Ankabut","Ar-Rum","Luqman","As-Sajdah","Al-Ahzab","Saba'","Fatir","Yasin","As-Saffat","Sad","Az-Zumar","Ghafir","Fussilat","Asy-Syura","Az-Zukhruf","Ad-Dukhan","Al-Jasiyah","Al-Ahqaf","Muhammad","Al-Fath","Al-Hujurat","Qaf","Az-Zariyat","At-Tur","An-Najm","Al-Qamar","Ar-Rahman","Al-Waqi'ah","Al-Hadid","Al-Mujadilah","Al-Hasyr","Al-Mumtahanah","As-Saff","Al-Jumu'ah","Al-Munafiqun","At-Taghabun","At-Talaq","At-Tahrim","Al-Mulk","Al-Qalam","Al-Haqqah","Al-Ma'arij","Nuh","Al-Jinn","Al-Muzzammil","Al-Muddassir","Al-Qiyamah","Al-Insan","Al-Mursalat","An-Naba'","An-Nazi'at","'Abasa","At-Takwir","Al-Infitar","Al-Mutaffifin","Al-Insyiqaq","Al-Buruj","At-Tariq","Al-A'la","Al-Ghasyiyah","Al-Fajr","Al-Balad","Asy-Syams","Al-Lail","Ad-Duha","Asy-Syarh","At-Tin","Al-'Alaq","Al-Qadr","Al-Bayyinah","Az-Zalzalah","Al-'Adiyat","Al-Qari'ah","At-Takasur","Al-'Asr","Al-Humazah","Al-Fil","Quraisy","Al-Ma'un","Al-Kausar","Al-Kafirun","An-Nasr","Al-Lahab","Al-Ikhlas","Al-Falaq","An-Nas"];
+
+    window.onload = () => {
+      const selectSurah = document.getElementById('in-surah');
+      daftarSurah.forEach((surah, index) => {
+        selectSurah.innerHTML += `<option value="${surah}">${index + 1}. ${surah}</option>`;
+      });
+    };
+
+    function handleLogin(event) {
+      event.preventDefault(); 
+      
+      const u = document.getElementById('username').value;
+      const p = document.getElementById('password').value;
+      const btn = document.getElementById('btn-login');
+      const msg = document.getElementById('login-msg');
+
+      if (!SCRIPT_URL) {
+        msg.innerText = "Error: URL Web App belum dimasukkan di kode HTML.";
+        msg.classList.remove('hidden');
+        return;
+      }
+
+      btn.disabled = true;
+      btn.innerHTML = `<span class="animate-pulse flex gap-2"><div class="w-4 h-4 bg-white/50 rounded-full animate-pulse"></div>Memeriksa...</span>`;
+      msg.classList.add('hidden');
+
+      fetch(SCRIPT_URL, {
+        method: "POST",
+        body: JSON.stringify({ action: "login", username: u, password: p })
+      })
+      .then(response => response.json())
+      .then(res => {
+        if (res.success) {
+          // Sukses Login: Sembunyikan login, tampilkan dashboard
+          document.getElementById('login-section').classList.add('hidden');
+          document.getElementById('main-section').classList.remove('hidden');
+          
+          // Update Informasi User di UI Dashboard
+          document.getElementById('user-info-top').innerText = res.nama;
+          document.getElementById('user-info-name').innerText = res.nama;
+          document.getElementById('user-info-role').innerText = res.role;
+          document.getElementById('user-info-username').innerText = u;
+          
+          // Reset form password untuk keamanan
+          document.getElementById('password').value = ""; 
+        } else {
+          // Gagal Login
+          msg.innerText = res.message;
+          msg.classList.remove('hidden');
+          btn.disabled = false;
+          btn.innerHTML = `<i class="material-icons-round text-sm">login</i><span>MASUK</span>`;
+        }
+      })
+      .catch(err => {
+        msg.innerText = "Terjadi kesalahan jaringan (CORS atau URL salah).";
+        msg.classList.remove('hidden');
+        btn.disabled = false;
+        btn.innerHTML = `<i class="material-icons-round text-sm">login</i><span>MASUK</span>`;
+      });
+    }
+
+    function resetForm() {
+      document.getElementById('loginForm').reset();
+      document.getElementById('login-msg').classList.add('hidden');
+    }
+
+    function logout() {
+      if(confirm("Apakah Anda yakin ingin keluar?")) {
+        document.getElementById('main-section').classList.add('hidden');
+        document.getElementById('login-section').classList.remove('hidden');
+      }
+    }
+  </script>
+</body>
+</html>
