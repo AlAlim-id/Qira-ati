@@ -237,20 +237,102 @@
           </div>
         </div>
 
-        <div id="page-lap-mengaji" class="page-content hidden p-6">
+        <div id="page-lap-mengaji" class="page-content hidden p-6 sm:p-8">
           <h2 class="text-2xl font-bold text-slate-800 mb-6 no-print">Laporan Mengaji</h2>
-          <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm no-print mb-6">
-            <div class="flex gap-4"><select id="sel-lap-mengaji" class="flex-1 px-4 py-2 rounded-lg border border-slate-300"><option value="">-- Pilih Santri --</option></select><button onclick="lihatLaporan('mengaji')" class="bg-blue-600 text-white px-6 rounded-lg font-semibold">Cari</button><button onclick="window.print()" class="bg-slate-800 text-white px-4 rounded-lg"><i class="material-icons-round mt-1">print</i></button></div>
+          
+          <div class="bg-white p-6 md:p-8 rounded-xl border border-slate-200 shadow-sm no-print mb-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
+              <div>
+                <label class="block text-sm font-medium text-slate-600 mb-1.5">Filter Kelas</label>
+                <select id="filter-kelas-lap-mengaji" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none transition text-sm" onchange="filterMurid('lap-mengaji')">
+                  <option value="">-- Semua Kelas --</option>
+                </select>
+              </div>
+              <div class="md:col-span-2 flex flex-col sm:flex-row gap-3 items-end">
+                <div class="flex-1 w-full">
+                  <label class="block text-sm font-medium text-slate-600 mb-1.5">Pilih Santri</label>
+                  <select id="sel-murid-lap-mengaji" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none transition text-sm">
+                    <option value="">-- Pilih Santri --</option>
+                  </select>
+                </div>
+                <button onclick="lihatLaporan('mengaji')" class="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-lg font-semibold shadow-sm transition flex items-center justify-center gap-2">
+                  <i class="material-icons-round text-sm">search</i> Tampilkan
+                </button>
+                <button onclick="cetakLaporan('mengaji')" class="w-full sm:w-auto bg-slate-800 hover:bg-slate-900 text-white px-5 py-2.5 rounded-lg font-semibold shadow-sm transition flex items-center justify-center gap-2">
+                  <i class="material-icons-round text-sm">print</i> Cetak
+                </button>
+              </div>
+            </div>
           </div>
-          <div id="print-area" class="bg-white p-6 rounded-xl border border-slate-200 hidden"><h3 class="font-bold text-center mb-4 uppercase text-lg" id="judul-lap-mengaji">LAPORAN MENGAJI</h3><table class="w-full text-left text-sm border-collapse border border-slate-300"><thead><tr class="bg-slate-100"><th class="border border-slate-300 px-4 py-2">TGL</th><th class="border border-slate-300 px-4 py-2">INFO</th><th class="border border-slate-300 px-4 py-2">HASIL</th><th class="border border-slate-300 px-4 py-2">PENGUJI</th></tr></thead><tbody id="body-lap-mengaji"></tbody></table></div>
+
+          <div id="print-area-mengaji" class="bg-white p-8 rounded-xl border border-slate-200 shadow-sm hidden print-target">
+            <div class="text-center mb-8 border-b border-slate-200 pb-6">
+              <h3 class="font-bold text-xl uppercase tracking-wide text-slate-800">Laporan Mengaji Santri</h3>
+              <p class="text-slate-500 mt-1">Qara'a Al Azhar Semarang</p>
+              <h4 class="text-lg font-bold text-blue-700 mt-3" id="judul-lap-mengaji">Nama Santri</h4>
+            </div>
+            <table class="w-full text-left text-sm border-collapse">
+              <thead>
+                <tr class="bg-slate-50 text-slate-600 border-y border-slate-200">
+                  <th class="px-4 py-3 font-semibold">TANGGAL</th>
+                  <th class="px-4 py-3 font-semibold">JILID / HALAMAN</th>
+                  <th class="px-4 py-3 font-semibold">HASIL</th>
+                  <th class="px-4 py-3 font-semibold">PENGUJI</th>
+                </tr>
+              </thead>
+              <tbody id="body-lap-mengaji" class="divide-y divide-slate-100">
+                </tbody>
+            </table>
+          </div>
         </div>
 
-        <div id="page-lap-hafalan" class="page-content hidden p-6">
+        <div id="page-lap-hafalan" class="page-content hidden p-6 sm:p-8">
           <h2 class="text-2xl font-bold text-slate-800 mb-6 no-print">Laporan Hafalan</h2>
-          <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm no-print mb-6">
-            <div class="flex gap-4"><select id="sel-lap-hafalan" class="flex-1 px-4 py-2 rounded-lg border border-slate-300"><option value="">-- Pilih Santri --</option></select><button onclick="lihatLaporan('hafalan')" class="bg-blue-600 text-white px-6 rounded-lg font-semibold">Cari</button><button onclick="window.print()" class="bg-slate-800 text-white px-4 rounded-lg"><i class="material-icons-round mt-1">print</i></button></div>
+          
+          <div class="bg-white p-6 md:p-8 rounded-xl border border-slate-200 shadow-sm no-print mb-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
+              <div>
+                <label class="block text-sm font-medium text-slate-600 mb-1.5">Filter Kelas</label>
+                <select id="filter-kelas-lap-hafalan" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none transition text-sm" onchange="filterMurid('lap-hafalan')">
+                  <option value="">-- Semua Kelas --</option>
+                </select>
+              </div>
+              <div class="md:col-span-2 flex flex-col sm:flex-row gap-3 items-end">
+                <div class="flex-1 w-full">
+                  <label class="block text-sm font-medium text-slate-600 mb-1.5">Pilih Santri</label>
+                  <select id="sel-murid-lap-hafalan" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none transition text-sm">
+                    <option value="">-- Pilih Santri --</option>
+                  </select>
+                </div>
+                <button onclick="lihatLaporan('hafalan')" class="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-lg font-semibold shadow-sm transition flex items-center justify-center gap-2">
+                  <i class="material-icons-round text-sm">search</i> Tampilkan
+                </button>
+                <button onclick="cetakLaporan('hafalan')" class="w-full sm:w-auto bg-slate-800 hover:bg-slate-900 text-white px-5 py-2.5 rounded-lg font-semibold shadow-sm transition flex items-center justify-center gap-2">
+                  <i class="material-icons-round text-sm">print</i> Cetak
+                </button>
+              </div>
+            </div>
           </div>
-          <div id="print-area" class="bg-white p-6 rounded-xl border border-slate-200 hidden"><h3 class="font-bold text-center mb-4 uppercase text-lg" id="judul-lap-hafalan">LAPORAN HAFALAN</h3><table class="w-full text-left text-sm border-collapse border border-slate-300"><thead><tr class="bg-slate-100"><th class="border border-slate-300 px-4 py-2">TGL</th><th class="border border-slate-300 px-4 py-2">SURAH (AYAT)</th><th class="border border-slate-300 px-4 py-2">PREDIKAT</th><th class="border border-slate-300 px-4 py-2">PENGUJI</th></tr></thead><tbody id="body-lap-hafalan"></tbody></table></div>
+
+          <div id="print-area-hafalan" class="bg-white p-8 rounded-xl border border-slate-200 shadow-sm hidden print-target">
+            <div class="text-center mb-8 border-b border-slate-200 pb-6">
+              <h3 class="font-bold text-xl uppercase tracking-wide text-slate-800">Laporan Hafalan Santri</h3>
+              <p class="text-slate-500 mt-1">Qara'a Al Azhar Semarang</p>
+              <h4 class="text-lg font-bold text-blue-700 mt-3" id="judul-lap-hafalan">Nama Santri</h4>
+            </div>
+            <table class="w-full text-left text-sm border-collapse">
+              <thead>
+                <tr class="bg-slate-50 text-slate-600 border-y border-slate-200">
+                  <th class="px-4 py-3 font-semibold">TANGGAL</th>
+                  <th class="px-4 py-3 font-semibold">SURAH (AYAT)</th>
+                  <th class="px-4 py-3 font-semibold">PREDIKAT</th>
+                  <th class="px-4 py-3 font-semibold">PENGUJI</th>
+                </tr>
+              </thead>
+              <tbody id="body-lap-hafalan" class="divide-y divide-slate-100">
+              </tbody>
+            </table>
+          </div>
         </div>
 
         <div id="page-data-murid" class="page-content hidden p-6"><h2 class="text-2xl font-bold mb-6">Data Murid</h2><div class="bg-white rounded-xl border border-slate-200"><table class="w-full text-left text-sm"><thead class="bg-slate-50 border-b"><tr><th class="px-6 py-3">NIS</th><th class="px-6 py-3">NAMA</th><th class="px-6 py-3">KELAS</th></tr></thead><tbody id="tabel-murid" class="divide-y divide-slate-100"></tbody></table></div></div>
@@ -299,15 +381,20 @@
 
         // Isi Dropdown Murid
         // Setup Filter Kelas Dinamis
+        // Setup Filter Kelas Dinamis
         const unikKelas = [...new Set(APP_CACHE.murid.map(m => m.kelas))].sort();
         const opsiKelas = '<option value="">-- Semua Kelas --</option>' + unikKelas.map(k => `<option value="${k}">Kelas ${k}</option>`).join('');
         
         if(document.getElementById('filter-kelas-mengaji')) document.getElementById('filter-kelas-mengaji').innerHTML = opsiKelas;
         if(document.getElementById('filter-kelas-hafalan')) document.getElementById('filter-kelas-hafalan').innerHTML = opsiKelas;
+        if(document.getElementById('filter-kelas-lap-mengaji')) document.getElementById('filter-kelas-lap-mengaji').innerHTML = opsiKelas;
+        if(document.getElementById('filter-kelas-lap-hafalan')) document.getElementById('filter-kelas-lap-hafalan').innerHTML = opsiKelas;
 
         // Panggil filter awal agar Dropdown Murid terisi semua
         filterMurid('mengaji');
         filterMurid('hafalan');
+        filterMurid('lap-mengaji');
+        filterMurid('lap-hafalan');
         
         muatDashboard();
       } else { msg.innerText = res.message; msg.classList.remove('hidden'); }
@@ -361,14 +448,41 @@
     }
 
     async function lihatLaporan(t) {
-      const nis = document.getElementById('sel-lap-'+t).value; if(!nis) return alert("Pilih Santri!");
+      const nis = document.getElementById('sel-murid-lap-'+t).value; 
+      if(!nis) return alert("Silakan pilih Santri terlebih dahulu!");
+      
       const m = APP_CACHE.murid.find(x => x.nis === nis);
-      document.getElementById('judul-lap-'+t).innerText = `LAPORAN ${t.toUpperCase()} - ${m.nama}`;
-      document.getElementById('body-lap-'+t).innerHTML = '<tr><td colspan="4" class="p-4 text-center">Mencari data...</td></tr>';
-      document.getElementById('print-area').parentNode.classList.remove('hidden');
+      document.getElementById('judul-lap-'+t).innerText = m.nama + " (Kelas " + m.kelas + ")";
+      document.getElementById('body-lap-'+t).innerHTML = '<tr><td colspan="4" class="p-8 text-center text-slate-500"><div class="loader mb-2"></div><br>Menarik data laporan...</td></tr>';
+      
+      // Buka kotak tabel laporannya
+      document.getElementById('print-area-'+t).classList.remove('hidden');
       
       const res = await fetchAPI('ambilLaporan', {nis: nis, tipe: t});
-      document.getElementById('body-lap-'+t).innerHTML = res.data.length ? res.data.map(d => `<tr><td class="border border-slate-300 px-4 py-2">${d.tglStr}</td><td class="border border-slate-300 px-4 py-2">${d.info}</td><td class="border border-slate-300 px-4 py-2">${d.status}</td><td class="border border-slate-300 px-4 py-2 text-xs">${d.penguji}</td></tr>`).join('') : `<tr><td colspan="4" class="p-4 text-center">Tidak ada data</td></tr>`;
+      
+      if(res.data.length > 0) {
+        document.getElementById('body-lap-'+t).innerHTML = res.data.map(d => {
+          // Mewarnai status agar lebih intuitif
+          const warnaStatus = (d.status.includes('MENGULANG') || d.status.includes('Maqbul')) 
+                              ? 'text-red-600 bg-red-50' 
+                              : 'text-green-700 bg-green-50';
+                              
+          return `<tr class="hover:bg-slate-50 transition">
+                    <td class="px-4 py-3">${d.tglStr}</td>
+                    <td class="px-4 py-3 font-medium text-slate-800">${d.info}</td>
+                    <td class="px-4 py-3"><span class="${warnaStatus} px-2.5 py-1 rounded text-xs font-semibold">${d.status}</span></td>
+                    <td class="px-4 py-3 text-slate-500 text-xs">${d.penguji}</td>
+                  </tr>`;
+        }).join('');
+      } else {
+        document.getElementById('body-lap-'+t).innerHTML = `<tr><td colspan="4" class="p-8 text-center text-slate-400">Belum ada riwayat setoran.</td></tr>`;
+      }
+    }
+
+    function cetakLaporan(t) {
+      const nis = document.getElementById('sel-murid-lap-'+t).value; 
+      if(!nis) return alert("Tampilkan data laporan santri terlebih dahulu sebelum mencetak!");
+      window.print();
     }
 
     async function loadDataAdmin(action, targetId) {
@@ -403,6 +517,7 @@
   </script>
 </body>
 </html>
+
 
 
 
