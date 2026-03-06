@@ -7,53 +7,34 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+  
   <style>
     body { font-family: 'Inter', sans-serif; }
     .loader { border: 3px solid #f3f3f3; border-radius: 50%; border-top: 3px solid #2563eb; width: 20px; height: 20px; animation: spin 1s linear infinite; display: inline-block; }
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     
-    /* PENGATURAN KHUSUS CETAK PDF / PRINTER */
+    /* PENGATURAN CETAK SUPER BERSIH */
     @media print {
-      /* 1. Paksa body dan container utama agar tidak terpotong (Reset Tailwind) */
-      html, body, #main-section, main {
+      /* Bebaskan tinggi layar dari batasan Tailwind */
+      html, body {
         height: auto !important;
         overflow: visible !important;
         background-color: white !important;
       }
-      
-      /* 2. Sembunyikan semua elemen di layar */
-      body * { 
-        visibility: hidden; 
+      /* Sembunyikan seluruh tampilan aplikasi asli secara total */
+      #login-section, #main-section {
+        display: none !important;
       }
-      
-      /* 3. Tampilkan HANYA area yang memiliki kelas 'print-target' */
-      .print-target, .print-target * { 
-        visibility: visible; 
+      /* Tampilkan hanya wadah kloningan cetak */
+      #wadah-cetak-khusus {
+        display: block !important;
+        width: 100%;
+        color: black !important;
       }
-      
-      /* 4. Posisikan area cetak pas di ujung kiri atas kertas */
-      .print-target { 
-        position: absolute; 
-        left: 0; 
-        top: 0; 
-        width: 100%; 
-        border: none !important;
-        box-shadow: none !important;
-        padding: 0 !important;
-        margin: 0 !important;
-      }
-
-      /* 5. Sembunyikan elemen yang mengganggu (Sidebar, Header, tombol) */
-      header, aside, .no-print, button { 
-        display: none !important; 
-      }
-      
-      /* 6. Atur ukuran Margin Kertas (Opsional) */
-      @page { 
-        margin: 1.5cm; 
-      }
+      @page { margin: 1.5cm; }
     }
   </style>
+  
 </head>
 <body class="bg-slate-50 text-slate-800 h-screen overflow-hidden">
 
@@ -518,7 +499,26 @@
     function cetakLaporan(t) {
       const nis = document.getElementById('sel-murid-lap-'+t).value; 
       if(!nis) return alert("Tampilkan data laporan santri terlebih dahulu sebelum mencetak!");
+      
+      // 1. Kopi HTML dari tabel yang ingin dicetak
+      const isiTabel = document.getElementById('print-area-'+t).innerHTML;
+      
+      // 2. Buat wadah baru (kertas kosong) di paling bawah aplikasi jika belum ada
+      let wadahCetak = document.getElementById('wadah-cetak-khusus');
+      if (!wadahCetak) {
+        wadahCetak = document.createElement('div');
+        wadahCetak.id = 'wadah-cetak-khusus';
+        document.body.appendChild(wadahCetak);
+      }
+      
+      // 3. Masukkan tabel tadi ke wadah khusus cetak
+      wadahCetak.innerHTML = isiTabel;
+      
+      // 4. Perintahkan browser untuk mencetak sekarang
       window.print();
+      
+      // 5. Bersihkan kertasnya kembali setelah menu print tertutup
+      wadahCetak.innerHTML = '';
     }
 
     async function loadDataAdmin(action, targetId) {
@@ -553,6 +553,7 @@
   </script>
 </body>
 </html>
+
 
 
 
