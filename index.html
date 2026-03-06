@@ -1,247 +1,251 @@
 <!DOCTYPE html>
-<html lang="id">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Qara'a - Al Azhar Semarang</title>
-  
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <script src="https://cdn.tailwindcss.com"></script>
+  <base target="_top">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
-
-  <script>
-    // Konfigurasi Tailwind Custom Theme
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: {
-            sans: ['Poppins', 'sans-serif'],
-          },
-          colors: {
-            'qaraa-primary': '#2563eb', // Blue 600
-            'qaraa-dark': '#1e3a8a',    // Blue 900
-            'qaraa-bg': '#f3f4f6',      // Gray 100
-            'qaraa-active': '#10b981',  // Green (untuk indikator sidebar aktif)
-          }
-        }
-      }
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <style>
+    :root { --navy: #0d47a1; --light: #f8f9fa; }
+    body { background: var(--light); font-family: 'Segoe UI', sans-serif; margin: 0; }
+    #login-section { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #eceff1; display: flex; align-items: center; justify-content: center; z-index: 9999; }
+    #main-section { display: none; min-height: 100vh; }
+    #sidebar { min-width: 260px; background: var(--navy); color: white; min-height: 100vh; position: sticky; top: 0; }
+    .nav-link { color: rgba(255,255,255,0.7); padding: 15px 25px; cursor: pointer; text-decoration: none; display: flex; align-items: center; }
+    .nav-link.active { background: #1565c0; color: white; border-left: 5px solid #fff; }
+    .content-area { flex-grow: 1; padding: 40px; }
+    .hidden { display: none !important; }
+    .card-custom { border: none; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+    .stat-card { border-radius: 15px; padding: 20px; color: white; margin-bottom: 20px; }
+    .riwayat-box { border-left: 5px solid #ffc107; background: #fffdf5; padding: 12px; border-radius: 8px; margin-bottom: 15px; font-size: 0.85rem; }
+    @media print {
+      body * { visibility: hidden; }
+      .print-target, .print-target * { visibility: visible; }
+      .print-target { position: absolute; left: 0; top: 0; width: 100%; padding: 0; margin: 0; }
+      table { width: 100% !important; margin: 0 auto !important; border-collapse: collapse; }
+      .no-print, button, .btn, #sidebar, #login-section, .filter-area { display: none !important; }
+      @page { margin: 2cm; }
     }
-  </script>
+  </style>
 </head>
-<body class="bg-qaraa-bg font-sans text-slate-800 h-screen overflow-hidden">
+<body>
 
-  <div id="login-section" class="fixed inset-0 bg-qaraa-bg z-50 flex items-center justify-center p-4">
-    <div class="w-full max-w-md bg-white rounded-xl shadow-2xl overflow-hidden transform transition-all duration-300 scale-100 opacity-100">
-      
-      <div class="bg-qaraa-primary px-6 py-5 text-white flex items-center gap-4">
-        <i class="material-icons-round text-3xl">account_circle</i>
-        <h3 class="text-xl font-semibold tracking-tight">LOGIN QARA'A</h3>
-      </div>
-      
-      <div class="p-8">
-        <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-5">
-          <div>
-            <input type="text" id="username" class="w-full px-4 py-3 rounded-lg bg-slate-50 border border-slate-300 focus:outline-none focus:ring-2 focus:ring-qaraa-primary transition duration-150 text-sm" placeholder="Ketik Username..." required>
-          </div>
-          <div class="mb-6">
-            <input type="password" id="password" class="w-full px-4 py-3 rounded-lg bg-slate-50 border border-slate-300 focus:outline-none focus:ring-2 focus:ring-qaraa-primary transition duration-150 text-sm" placeholder="Ketik Password..." required>
-          </div>
-          
-          <div class="grid grid-cols-2 gap-4 pt-2">
-            <button type="submit" id="btn-login" class="w-full bg-qaraa-primary hover:bg-qaraa-dark text-white font-semibold py-3 px-4 rounded-lg transition duration-200 shadow flex items-center justify-center gap-2">
-              <i class="material-icons-round text-sm">login</i>
-              <span>MASUK</span>
-            </button>
-            <button type="button" onclick="resetForm()" class="w-full bg-white hover:bg-red-50 text-red-600 border border-red-300 font-semibold py-3 px-4 rounded-lg transition duration-200">
-              BATAL
-            </button>
-          </div>
+  <div id="login-section">
+    <div class="card shadow-lg border-0" style="width: 400px; border-radius: 20px; overflow:hidden;">
+      <div class="p-5 text-center bg-primary text-white"><i class="material-icons-round" style="font-size: 60px;">menu_book</i><h3 class="fw-bold mb-0">QARA'A AL AZHAR</h3></div>
+      <div class="card-body p-4">
+        <form onsubmit="handleLogin(event)">
+          <input type="text" id="user" class="form-control mb-3" placeholder="Username" required>
+          <input type="password" id="pass" class="form-control mb-4" placeholder="Password" required>
+          <button type="submit" id="btn-login" class="btn btn-primary w-100 py-2 fw-bold">MASUK</button>
         </form>
-        
-        <div id="login-msg" class="text-red-500 text-sm text-center mt-5 font-medium hidden"></div>
-        <div class="text-center mt-6 pt-4 border-t">
-          <a href="#" class="text-sm text-slate-500 hover:text-qaraa-primary transition">Lupa Password?</a>
-        </div>
+        <div id="login-msg" class="text-danger small mt-3 text-center"></div>
       </div>
     </div>
   </div>
 
-  <div id="main-section" class="hidden w-full h-full flex flex-col">
-    
-    <header class="bg-qaraa-primary text-white h-16 flex items-center justify-between px-6 shadow-md z-40">
-      <div class="flex items-center gap-2">
-        <i class="material-icons-round text-3xl">menu_book</i>
-        <h1 class="text-xl font-bold tracking-tight">Qara'a <span class="font-normal opacity-75">Al Azhar</span></h1>
+  <div id="main-section">
+    <nav id="sidebar">
+      <div class="p-4 text-center border-bottom border-white border-opacity-25 mb-3"><h5 class="fw-bold mb-0">QARA'A AL AZHAR</h5><span id="role-display" class="badge bg-light text-primary mt-2"></span></div>
+      <div class="nav flex-column">
+        <div class="nav-link active" onclick="showPage('dashboard')"><i class="material-icons-round me-3">dashboard</i> Dashboard</div>
+        <div class="nav-link" onclick="showPage('input-mengaji')"><i class="material-icons-round me-3">history_edu</i> Input Mengaji</div>
+        <div class="nav-link" onclick="showPage('input-hafalan')"><i class="material-icons-round me-3">stars</i> Input Hafalan</div>
+        <div class="nav-link" onclick="showPage('lap-mengaji')"><i class="material-icons-round me-3">assignment</i> Laporan Mengaji</div>
+        <div class="nav-link" onclick="showPage('lap-hafalan')"><i class="material-icons-round me-3">assessment</i> Laporan Hafalan</div>
+        <div class="nav-link admin-only" onclick="showPage('data-murid')"><i class="material-icons-round me-3">people</i> Data Murid</div>
+        <div class="nav-link text-warning mt-5" onclick="handleLogout()"><i class="material-icons-round me-3">logout</i> Keluar</div>
       </div>
-      <div class="flex items-center gap-3 bg-white/10 py-1.5 px-3 rounded-full">
-        <img src="https://via.placeholder.com/32" alt="User" class="w-8 h-8 rounded-full border border-white/50">
-        <span id="user-info-top" class="font-medium text-sm"></span>
-        <button onclick="logout()" class="text-white/60 hover:text-red-300 transition pl-2">
-          <i class="material-icons-round text-lg">logout</i>
-        </button>
+    </nav>
+
+    <div class="content-area">
+      <h3 id="page-title" class="fw-bold mb-4 text-primary">DASHBOARD</h3>
+
+      <div id="page-dashboard" class="content-page">
+        <div class="row">
+          <div class="col-md-3"><div class="stat-card bg-primary"><h6>Total Murid</h6><h2 id="st-murid">0</h2></div></div>
+          <div class="col-md-3"><div class="stat-card bg-success"><h6>Total Ustadz</h6><h2 id="st-ustadz">0</h2></div></div>
+          <div class="col-md-3"><div class="stat-card bg-info"><h6>Sudah Setoran</h6><h2 id="st-sudah">0</h2></div></div>
+          <div class="col-md-3"><div class="stat-card bg-danger"><h6>Belum Setoran</h6><h2 id="st-belum">0</h2></div></div>
+        </div>
+        <div class="d-flex gap-2 mb-4 admin-only">
+          <button class="btn btn-primary btn-sm" onclick="exportDataExcel('mengaji')">Export Mengaji</button>
+          <button class="btn btn-info btn-sm text-white" onclick="exportDataExcel('hafalan')">Export Hafalan</button>
+        </div>
+        <div class="card card-custom p-4 bg-white shadow-sm print-target">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h6 class="fw-bold text-danger mb-0">SANTRI BELUM SETORAN MINGGU INI</h6>
+            <button class="btn btn-outline-danger btn-sm no-print" onclick="window.print()">Cetak PDF</button>
+          </div>
+          <table class="table table-sm small table-bordered"><thead><tr><th>NIS</th><th>NAMA</th><th>KELAS</th></tr></thead><tbody id="body-belum-setoran"></tbody></table>
+        </div>
       </div>
-    </header>
 
-    <div class="flex-1 flex overflow-hidden">
-      
-      <aside class="w-64 bg-qaraa-dark text-slate-300 h-full flex flex-col pt-6 z-30">
-        <div class="flex-1 flex flex-col gap-1 px-3">
-          
-          <a href="#" class="flex items-center gap-3.5 px-4 py-3 rounded-lg font-medium bg-white/10 text-white relative group overflow-hidden transition-all duration-200">
-            <div class="absolute left-0 top-0 bottom-0 w-1.5 bg-qaraa-active rounded-l-lg transform translate-x-0 group-hover:translate-x-0 transition-transform"></div>
-            <i class="material-icons-round text-qaraa-active">dashboard</i> 
-            <span>Beranda</span>
-          </div>
-
-          <a href="#" class="flex items-center gap-3.5 px-4 py-3 rounded-lg font-medium text-slate-400 group hover:bg-white/5 hover:text-white relative overflow-hidden transition-all duration-200">
-             <div class="absolute left-0 top-0 bottom-0 w-1.5 bg-qaraa-active rounded-l-lg transform -translate-x-full group-hover:translate-x-0 transition-transform"></div>
-            <i class="material-icons-round text-slate-500 group-hover:text-qaraa-active transition">group</i> 
-            <span>Data Murid</span>
-          </a>
-          <a href="#" class="flex items-center gap-3.5 px-4 py-3 rounded-lg font-medium text-slate-400 group hover:bg-white/5 hover:text-white relative overflow-hidden transition-all duration-200">
-            <div class="absolute left-0 top-0 bottom-0 w-1.5 bg-qaraa-active rounded-l-lg transform -translate-x-full group-hover:translate-x-0 transition-transform"></div>
-            <i class="material-icons-round text-slate-500 group-hover:text-qaraa-active transition">history_edu</i> 
-            <span>Catatan Mengaji</span>
-          </a>
-          <a href="#" class="flex items-center gap-3.5 px-4 py-3 rounded-lg font-medium text-slate-400 group hover:bg-white/5 hover:text-white relative overflow-hidden transition-all duration-200">
-            <div class="absolute left-0 top-0 bottom-0 w-1.5 bg-qaraa-active rounded-l-lg transform -translate-x-full group-hover:translate-x-0 transition-transform"></div>
-            <i class="material-icons-round text-slate-500 group-hover:text-qaraa-active transition">star</i> 
-            <span>Input Hafalan</span>
-          </a>
-        </div>
-      </aside>
-
-      <main class="flex-1 bg-qaraa-bg p-8 overflow-y-auto z-10">
-        
-        <div class="flex justify-between items-center mb-10 border-b border-slate-200 pb-5">
-          <h1 class="text-2xl font-semibold text-slate-900 tracking-tight">DASHBOARD UTAMA</h1>
-          <p class="text-sm text-slate-500">Qara'a Al Azhar Semarang</p>
-        </div>
-        
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-          
-          <div class="col-span-1 md:col-span-2 space-y-8">
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-8">
-              <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 flex items-center gap-5 transition hover:shadow-lg">
-                <div class="bg-blue-100 text-blue-600 p-4 rounded-full">
-                  <i class="material-icons-round text-3xl">school</i>
-                </div>
-                <div>
-                  <p class="text-sm font-medium text-slate-500">Total Murid</p>
-                  <p class="text-3xl font-bold text-slate-900 mt-1">2</p> </div>
-              </div>
-              <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 flex items-center gap-5 transition hover:shadow-lg">
-                <div class="bg-green-100 text-green-600 p-4 rounded-full">
-                  <i class="material-icons-round text-3xl">supervisor_account</i>
-                </div>
-                <div>
-                  <p class="text-sm font-medium text-slate-500">Total Ustaz</p>
-                  <p class="text-3xl font-bold text-slate-900 mt-1">2</p> </div>
-              </div>
+      <div id="page-input-mengaji" class="content-page hidden">
+        <div class="card card-custom p-4 bg-white mb-4 shadow-sm">
+          <div class="row g-4">
+            <div class="col-md-6 border-end">
+              <label class="small fw-bold">Filter Kelas</label><select id="filter-kelas-mengaji" class="form-select mb-3" onchange="filterList('mengaji')"></select>
+              <label class="small fw-bold">Pilih Murid</label><select id="pilih-murid-mengaji" class="form-select mb-3" onchange="cekRiwayatTerakhir('mengaji')"></select>
+              <div id="box-last-mengaji" class="riwayat-box hidden"><span id="txt-last-mengaji"></span></div>
             </div>
-            
-            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
-                <label class="block text-sm font-semibold text-slate-700 mb-2">Lihat Daftar Surah (Statis)</label>
-                <select id="in-surah" class="w-full max-w-md px-4 py-3 rounded-lg bg-slate-50 border border-slate-300 focus:outline-none focus:ring-2 focus:ring-qaraa-primary text-sm">
-                  <option value="">-- Pilih Surah --</option>
-                </select>
+            <div class="col-md-6">
+              <div class="row g-2 mb-3"><div class="col-6"><select id="in-jilid" class="form-select"><option>Jilid 1</option><option>Jilid 2</option><option>Jilid 3</option><option>Jilid 4</option><option>Jilid 5</option><option>Jilid 6</option><option>Al-Quran</option></select></div><div class="col-6"><input type="text" id="in-hal" class="form-control" placeholder="Hal"></div></div>
+              <select id="in-hasil" class="form-select mb-3"><option>LANCAR</option><option>MENGULANG</option></select>
+              <button class="btn btn-primary w-100 py-3 fw-bold" onclick="saveData('mengaji')">SIMPAN</button>
             </div>
           </div>
+        </div><div id="rekap-input-mengaji-pos"></div>
+      </div>
 
-          <div class="col-span-1">
-            <div class="bg-white p-8 rounded-xl shadow-sm border border-slate-100 flex flex-col items-center text-center transition hover:shadow-lg">
-              <img src="https://via.placeholder.com/100" alt="User Profile" class="w-24 h-24 rounded-full border-4 border-slate-100 shadow-inner mb-5">
-              <h4 id="user-info-name" class="text-xl font-semibold text-slate-900 placeholder:text-slate-400">Nama Pengguna</h4>
-              <p id="user-info-role" class="text-sm font-medium text-qaraa-primary bg-blue-50 px-3 py-1 rounded-full mt-2 mb-6">ROLE</p>
-              
-              <div class="w-full space-y-3 text-left border-t border-slate-100 pt-6">
-                <p class="text-xs text-slate-500"><span class="font-semibold text-slate-700">Username:</span> <span id="user-info-username"></span></p>
-                <p class="text-xs text-slate-500"><span class="font-semibold text-slate-700">Email:</span> ustadz@alazhar.com</p> <p class="text-xs text-slate-500"><span class="font-semibold text-slate-700">Terdaftar Sejak:</span> 2024</p> </div>
+      <div id="page-input-hafalan" class="content-page hidden">
+        <div class="card card-custom p-4 bg-white mb-4 shadow-sm">
+          <div class="row g-4">
+            <div class="col-md-6 border-end">
+              <label class="small fw-bold">Filter Kelas</label><select id="filter-kelas-hafalan" class="form-select mb-3" onchange="filterList('hafalan')"></select>
+              <label class="small fw-bold">Pilih Murid</label><select id="pilih-murid-hafalan" class="form-select mb-3" onchange="cekRiwayatTerakhir('hafalan')"></select>
+              <div id="box-last-hafalan" class="riwayat-box hidden"><span id="txt-last-hafalan"></span></div>
+            </div>
+            <div class="col-md-6">
+              <div class="row g-2 mb-3"><div class="col-8"><select id="in-surah" class="form-select"></select></div><div class="col-4"><input type="text" id="in-ayat" class="form-control" placeholder="Ayat"></div></div>
+              <select id="in-predikat" class="form-select mb-3"><option>Mumtaz</option><option>Jayyid Jiddan</option><option>Jayyid</option><option>Maqbul</option></select>
+              <button class="btn btn-primary w-100 py-3 fw-bold" onclick="saveData('hafalan')">SIMPAN</button>
             </div>
           </div>
+        </div><div id="rekap-input-hafalan-pos"></div>
+      </div>
+
+      <div id="page-lap-mengaji" class="content-page hidden">
+        <div class="card card-custom p-4 bg-white shadow-sm">
+          <div class="row g-2 mb-4 no-print">
+            <div class="col-md-4"><select id="filter-kelas-lap-mengaji" class="form-select" onchange="updateDropdownLap('mengaji')"></select></div>
+            <div class="col-md-5"><select id="pilih-murid-lap-mengaji" class="form-select"></select></div>
+            <div class="col-md-3 d-flex gap-2"><button class="btn btn-primary w-100" onclick="lihatLaporanSingle('mengaji')">LIHAT</button><button class="btn btn-danger" onclick="cetakLaporan('mengaji')"><i class="material-icons-round">picture_as_pdf</i></button></div>
+          </div>
+          <div id="print-area-mengaji" class="print-target hidden">
+            <div id="header-pdf-mengaji" class="text-center mb-4"></div>
+            <table class="table table-sm table-bordered small"><thead class="table-light"><tr><th>TGL</th><th>INFO</th><th>HASIL</th><th>USTADZ</th></tr></thead><tbody id="body-lap-mengaji-table"></tbody></table>
+          </div>
         </div>
-      </main>
+      </div>
+
     </div>
   </div>
 
   <script>
-    // MASUKKAN URL WEB APP GOOGLE APPS SCRIPT ANDA DI SINI
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwGKXWFzDPCGBzXZs6q7bN95eUx4b7ZbCQ1JkhvGHrZRMUG5gqbeequJspmBlQxneE7/exec"; 
-
+    // ==========================================
+    // MASUKKAN URL WEB APP ANDA DI BAWAH INI !!!
+    // ==========================================
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwGKXWFzDPCGBzXZs6q7bN95eUx4b7ZbCQ1JkhvGHrZRMUG5gqbeequJspmBlQxneE7/exec";
+    
     const daftarSurah = ["Al-Fatihah","Al-Baqarah","Ali 'Imran","An-Nisa'","Al-Ma'idah","Al-An'am","Al-A'raf","Al-Anfal","At-Taubah","Yunus","Hud","Yusuf","Ar-Ra'd","Ibrahim","Al-Hijr","An-Nahl","Al-Isra'","Al-Kahf","Maryam","Taha","Al-Anbiya'","Al-Hajj","Al-Mu'minun","An-Nur","Al-Furqan","Asy-Syu'ara'","An-Naml","Al-Qasas","Al-'Ankabut","Ar-Rum","Luqman","As-Sajdah","Al-Ahzab","Saba'","Fatir","Yasin","As-Saffat","Sad","Az-Zumar","Ghafir","Fussilat","Asy-Syura","Az-Zukhruf","Ad-Dukhan","Al-Jasiyah","Al-Ahqaf","Muhammad","Al-Fath","Al-Hujurat","Qaf","Az-Zariyat","At-Tur","An-Najm","Al-Qamar","Ar-Rahman","Al-Waqi'ah","Al-Hadid","Al-Mujadilah","Al-Hasyr","Al-Mumtahanah","As-Saff","Al-Jumu'ah","Al-Munafiqun","At-Taghabun","At-Talaq","At-Tahrim","Al-Mulk","Al-Qalam","Al-Haqqah","Al-Ma'arij","Nuh","Al-Jinn","Al-Muzzammil","Al-Muddassir","Al-Qiyamah","Al-Insan","Al-Mursalat","An-Naba'","An-Nazi'at","'Abasa","At-Takwir","Al-Infitar","Al-Mutaffifin","Al-Insyiqaq","Al-Buruj","At-Tariq","Al-A'la","Al-Ghasyiyah","Al-Fajr","Al-Balad","Asy-Syams","Al-Lail","Ad-Duha","Asy-Syarh","At-Tin","Al-'Alaq","Al-Qadr","Al-Bayyinah","Az-Zalzalah","Al-'Adiyat","Al-Qari'ah","At-Takasur","Al-'Asr","Al-Humazah","Al-Fil","Quraisy","Al-Ma'un","Al-Kausar","Al-Kafirun","An-Nasr","Al-Lahab","Al-Ikhlas","Al-Falaq","An-Nas"];
+    let cacheMurid = []; let currentUser = {};
 
-    window.onload = () => {
-      const selectSurah = document.getElementById('in-surah');
-      daftarSurah.forEach((surah, index) => {
-        selectSurah.innerHTML += `<option value="${surah}">${index + 1}. ${surah}</option>`;
-      });
-    };
+    window.onload = () => { const s = document.getElementById('in-surah'); if(s) daftarSurah.forEach((n, i) => s.innerHTML += `<option value="${n}">${i+1}. ${n}</option>`); };
+
+    // HELPER UNTUK MENGIRIM DATA KE GOOGLE SCRIPT
+    function callAPI(action, payload = {}) {
+      payload.action = action;
+      return fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) }).then(res => res.json());
+    }
 
     function handleLogin(event) {
-      event.preventDefault(); 
+      event.preventDefault(); // Mencegah reload agar Enter berfungsi
+      const u = document.getElementById('user').value, p = document.getElementById('pass').value;
+      const btn = document.getElementById('btn-login'); btn.disabled = true; btn.innerText = "⏳...";
+      const msg = document.getElementById('login-msg'); msg.innerText = "";
       
-      const u = document.getElementById('username').value;
-      const p = document.getElementById('password').value;
-      const btn = document.getElementById('btn-login');
-      const msg = document.getElementById('login-msg');
+      callAPI('login', {u: u, p: p}).then(res => {
+        if(res.success) {
+          currentUser = res; document.getElementById('login-section').classList.add('hidden'); document.getElementById('main-section').style.display='flex'; document.getElementById('role-display').innerText = res.role + " | " + res.nama;
+          if(res.role === "GURU") document.querySelectorAll('.admin-only').forEach(el => el.classList.add('hidden'));
+          showPage('dashboard');
+        } else { btn.disabled = false; btn.innerText = "MASUK"; msg.innerText = res.message; }
+      }).catch(err => { btn.disabled = false; btn.innerText = "MASUK"; msg.innerText = "Gagal terhubung ke database."; });
+    }
 
-      if (!SCRIPT_URL) {
-        msg.innerText = "Error: URL Web App belum dimasukkan di kode HTML.";
-        msg.classList.remove('hidden');
-        return;
-      }
+    function showPage(p) {
+      document.querySelectorAll('.content-page').forEach(d => d.classList.add('hidden')); document.getElementById('page-'+p).classList.remove('hidden');
+      document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+      document.getElementById('page-title').innerText = p.replace('-', ' ').toUpperCase();
+      if(p==='dashboard') updateDashboard();
+      if(p.startsWith('input-') || p.startsWith('lap-')) muatDataMassal();
+      if(p==='input-mengaji') renderRekapTable('mengaji', 'rekap-input-mengaji-pos');
+      if(p==='input-hafalan') renderRekapTable('hafalan', 'rekap-input-hafalan-pos');
+    }
 
-      btn.disabled = true;
-      btn.innerHTML = `<span class="animate-pulse flex gap-2"><div class="w-4 h-4 bg-white/50 rounded-full animate-pulse"></div>Memeriksa...</span>`;
-      msg.classList.add('hidden');
-
-      fetch(SCRIPT_URL, {
-        method: "POST",
-        body: JSON.stringify({ action: "login", username: u, password: p })
-      })
-      .then(response => response.json())
-      .then(res => {
-        if (res.success) {
-          // Sukses Login: Sembunyikan login, tampilkan dashboard
-          document.getElementById('login-section').classList.add('hidden');
-          document.getElementById('main-section').classList.remove('hidden');
-          
-          // Update Informasi User di UI Dashboard
-          document.getElementById('user-info-top').innerText = res.nama;
-          document.getElementById('user-info-name').innerText = res.nama;
-          document.getElementById('user-info-role').innerText = res.role;
-          document.getElementById('user-info-username').innerText = u;
-          
-          // Reset form password untuk keamanan
-          document.getElementById('password').value = ""; 
-        } else {
-          // Gagal Login
-          msg.innerText = res.message;
-          msg.classList.remove('hidden');
-          btn.disabled = false;
-          btn.innerHTML = `<i class="material-icons-round text-sm">login</i><span>MASUK</span>`;
-        }
-      })
-      .catch(err => {
-        msg.innerText = "Terjadi kesalahan jaringan (CORS atau URL salah).";
-        msg.classList.remove('hidden');
-        btn.disabled = false;
-        btn.innerHTML = `<i class="material-icons-round text-sm">login</i><span>MASUK</span>`;
+    function muatDataMassal() {
+      callAPI('muatDataMurid').then(data => {
+        cacheMurid = data;
+        ['mengaji', 'hafalan', 'lap-mengaji', 'lap-hafalan'].forEach(t => {
+          const sK = document.getElementById('filter-kelas-'+t);
+          if(sK) {
+            sK.innerHTML = '<option value="">-- Kelas --</option>';
+            [...new Set(data.map(m => m.kelas))].sort().forEach(k => sK.innerHTML += `<option value="${k}">Kelas ${k}</option>`);
+            filterList(t);
+          }
+        });
       });
     }
 
-    function resetForm() {
-      document.getElementById('loginForm').reset();
-      document.getElementById('login-msg').classList.add('hidden');
+    function filterList(t) {
+      const k = document.getElementById('filter-kelas-'+t).value, s = document.getElementById('pilih-murid-'+t);
+      if(!s) return; s.innerHTML = '<option value="">-- Pilih Santri --</option>';
+      cacheMurid.filter(m => k === "" || m.kelas === k).forEach(m => s.innerHTML += `<option value="${m.id}">${m.nama} (${m.nis})</option>`);
     }
 
-    function logout() {
-      if(confirm("Apakah Anda yakin ingin keluar?")) {
-        document.getElementById('main-section').classList.add('hidden');
-        document.getElementById('login-section').classList.remove('hidden');
-      }
+    function updateDashboard() {
+      callAPI('ambilStatistikDashboard').then(res => {
+        document.getElementById('st-murid').innerText = res.totalMurid || 0; document.getElementById('st-ustadz').innerText = res.totalUstadz || 0;
+        document.getElementById('st-sudah').innerText = res.sudahMingguIni || 0; document.getElementById('st-belum').innerText = res.belumMingguIni || 0;
+        const tbody = document.getElementById('body-belum-setoran');
+        tbody.innerHTML = (res.daftarBelum && res.daftarBelum.length) ? res.daftarBelum.map(m => `<tr><td>${m.nis}</td><td>${m.nama}</td><td>${m.kelas}</td></tr>`).join('') : '<tr><td colspan="3" class="text-center">Semua setoran</td></tr>';
+      });
     }
+
+    function cekRiwayatTerakhir(t) {
+      const id = document.getElementById('pilih-murid-'+t).value; const m = cacheMurid.find(x => x.id === id); if(!m) return;
+      callAPI('ambilTerakhir', {nis: m.nis, tipe: t}).then(res => {
+        const box = document.getElementById('box-last-'+t), txt = document.getElementById('txt-last-'+t); box.classList.remove('hidden');
+        txt.innerHTML = res.ada ? `Terakhir: <b>${res.main}</b> Hal/Ayat <b>${res.sub}</b> (${res.status})` : "Belum ada riwayat.";
+      });
+    }
+
+    function renderRekapTable(tipe, targetId) {
+      const target = document.getElementById(targetId); target.innerHTML = `<div class="card card-custom p-3 bg-white mt-4 border-top border-primary border-4"><h6 class="fw-bold small mb-2">REKAP HARI INI</h6><table class="table table-sm small"><tbody id="body-${targetId}"></tbody></table></div>`;
+      callAPI('ambilRekapHariIni', {tipe: tipe}).then(data => {
+        const tbody = document.getElementById(`body-${targetId}`);
+        tbody.innerHTML = data.length ? data.map(d => `<tr><td>${d.waktu}</td><td><b>${d.nama}</b></td><td>${d.info1} Hal ${d.info2}</td><td>${d.status}</td></tr>`).join('') : "<tr><td>Belum ada data.</td></tr>";
+      });
+    }
+
+    function saveData(t) {
+      const id = document.getElementById('pilih-murid-'+t).value; const m = cacheMurid.find(x => x.id === id); if(!m) return alert("Pilih santri!");
+      const d = { nis: m.nis, nama_murid: m.nama };
+      if(t==='mengaji') { d.jilid = document.getElementById('in-jilid').value; d.halaman = document.getElementById('in-hal').value; d.hasil = document.getElementById('in-hasil').value; }
+      else { d.surah = document.getElementById('in-surah').value; d.ayat = document.getElementById('in-ayat').value; d.predikat = document.getElementById('in-predikat').value; }
+      callAPI('simpanProgress', {obj: d, tipe: t, ustadz: currentUser.nama}).then(res => { alert("Tersimpan"); renderRekapTable(t, 'rekap-input-'+t+'-pos'); cekRiwayatTerakhir(t); });
+    }
+
+    function lihatLaporanSingle(t) {
+      const nis = document.getElementById('pilih-murid-lap-' + t).value; if(!nis) return alert("Pilih santri!");
+      const area = document.getElementById('print-area-' + t); area.classList.remove('hidden');
+      const b = document.getElementById('body-lap-' + t + '-table'); b.innerHTML = '<tr><td colspan="4" class="text-center">Memuat...</td></tr>';
+      callAPI('ambilLaporanPerTipe', {nis: nis, tipe: t}).then(data => {
+        b.innerHTML = data.length ? data.map(d => `<tr><td>${d.tglStr}</td><td>${d.info}</td><td>${d.status}</td><td><small>${d.penguji}</small></td></tr>`).join('') : '<tr><td colspan="4">Kosong</td></tr>';
+      });
+    }
+
+    function updateDropdownLap(t) { const k = document.getElementById('filter-kelas-lap-'+t).value, s = document.getElementById('pilih-murid-lap-'+t); s.innerHTML = '<option value="">-- Nama --</option>'; cacheMurid.filter(m => k === "" || m.kelas === k).forEach(m => s.innerHTML += `<option value="${m.nis}">${m.nama} (${m.nis})</option>`); }
+
+    function exportDataExcel(t) {
+      alert("Memproses Export, mohon tunggu...");
+      callAPI('ambilDataExport', {tipe: t}).then(data => {
+        const ws = XLSX.utils.json_to_sheet(data); const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "Penilaian"); XLSX.writeFile(wb, "Data_"+t+"_Terakhir.xlsx");
+      });
+    }
+
+    function handleLogout() { if(confirm("Keluar?")) location.reload(); }
   </script>
 </body>
-
 </html>
