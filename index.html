@@ -165,24 +165,76 @@
           </div>
         </div>
 
-        <div id="page-hafalan" class="page-content hidden p-6">
+        <div id="page-hafalan" class="page-content hidden p-6 sm:p-8">
           <h2 class="text-2xl font-bold text-slate-800 mb-6">Input Hafalan</h2>
-          <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label class="block text-sm font-medium text-slate-600 mb-1">Pilih Santri</label>
-              <select id="sel-murid-hafalan" class="w-full px-4 py-2 mb-3 rounded-lg border border-slate-300" onchange="cekRiwayat('hafalan')"><option value="">-- Pilih --</option></select>
-              <div id="riwayat-hafalan" class="text-sm bg-yellow-50 text-yellow-800 p-3 rounded-lg hidden">Terakhir: -</div>
-            </div>
-            <div class="space-y-3">
-              <div class="flex gap-2">
-                <select id="in-surah" class="flex-1 px-4 py-2 rounded-lg border border-slate-300"></select>
-                <input type="text" id="in-ayat" class="w-24 px-4 py-2 rounded-lg border border-slate-300" placeholder="Ayat">
+            <div class="bg-white p-6 md:p-8 rounded-xl border border-slate-200 shadow-sm grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+            <div class="flex flex-col space-y-5 h-full">
+              <div>
+                <label class="block text-sm font-medium text-slate-600 mb-1.5">Filter Kelas</label>
+                <select id="filter-kelas-hafalan" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none transition text-sm" onchange="filterMurid('hafalan')">
+                  <option value="">-- Semua Kelas --</option>
+                </select>
               </div>
-              <select id="in-predikat" class="w-full px-4 py-2 rounded-lg border border-slate-300"><option>Mumtaz</option><option>Jayyid Jiddan</option><option>Jayyid</option><option>Maqbul</option></select>
-              <button onclick="simpanData('hafalan')" id="btn-hafalan" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 rounded-lg">SIMPAN HAFALAN</button>
+              <div>
+                <label class="block text-sm font-medium text-slate-600 mb-1.5">Pilih Santri</label>
+                <select id="sel-murid-hafalan" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none transition text-sm" onchange="cekRiwayat('hafalan')">
+                  <option value="">-- Pilih Santri --</option>
+                </select>
+              </div>
+              <div class="mt-auto pt-2">
+                <div id="riwayat-hafalan" class="text-sm bg-yellow-50 border border-yellow-200 text-yellow-800 p-3.5 rounded-lg hidden">
+                  Terakhir: -
+                </div>
+              </div>
+            </div>
+
+            <div class="flex flex-col space-y-5 h-full">
+              <div class="flex gap-3">
+                <div class="flex-1">
+                  <label class="block text-sm font-medium text-slate-600 mb-1.5">Surah</label>
+                  <select id="in-surah" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none transition text-sm">
+                    </select>
+                </div>
+                <div class="w-1/3">
+                  <label class="block text-sm font-medium text-slate-600 mb-1.5">Ayat</label>
+                  <input type="text" id="in-ayat" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none transition text-sm text-center" placeholder="Ayat...">
+                </div>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-slate-600 mb-1.5">Predikat</label>
+                <select id="in-predikat" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none transition text-sm">
+                  <option>Mumtaz</option>
+                  <option>Jayyid Jiddan</option>
+                  <option>Jayyid</option>
+                  <option>Maqbul</option>
+                </select>
+              </div>
+              <div class="mt-auto pt-2">
+                <button onclick="simpanData('hafalan')" id="btn-hafalan" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg shadow-sm transition">
+                  SIMPAN HAFALAN
+                </button>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="mt-8 bg-white p-6 md:p-8 rounded-xl border border-slate-200 shadow-sm">
+            <h3 class="font-semibold text-lg text-slate-800 mb-4">Rekap Hafalan Hari Ini</h3>
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-sm whitespace-nowrap">
+                <thead class="border-b border-slate-200 text-slate-500 bg-slate-50">
+                  <tr>
+                    <th class="py-3 px-4 font-medium rounded-tl-lg">Waktu</th>
+                    <th class="py-3 px-4 font-medium">Nama Santri</th>
+                    <th class="py-3 px-4 font-medium">Surah / Ayat</th>
+                    <th class="py-3 px-4 font-medium rounded-tr-lg">Status</th>
+                  </tr>
+                </thead>
+                <tbody id="rekap-hafalan" class="divide-y divide-slate-100">
+                  </tbody>
+              </table>
             </div>
           </div>
-          <div class="mt-6 bg-white p-6 rounded-xl border border-slate-200"><h3 class="font-semibold mb-4">Rekap Hari Ini</h3><table class="w-full text-left text-sm"><thead class="border-b"><tr><th class="py-2">Waktu</th><th>Nama</th><th>Surah/Ayat</th><th>Status</th></tr></thead><tbody id="rekap-hafalan"></tbody></table></div>
         </div>
 
         <div id="page-lap-mengaji" class="page-content hidden p-6">
@@ -249,10 +301,13 @@
         // Setup Filter Kelas Dinamis
         const unikKelas = [...new Set(APP_CACHE.murid.map(m => m.kelas))].sort();
         const opsiKelas = '<option value="">-- Semua Kelas --</option>' + unikKelas.map(k => `<option value="${k}">Kelas ${k}</option>`).join('');
+        
         if(document.getElementById('filter-kelas-mengaji')) document.getElementById('filter-kelas-mengaji').innerHTML = opsiKelas;
+        if(document.getElementById('filter-kelas-hafalan')) document.getElementById('filter-kelas-hafalan').innerHTML = opsiKelas;
 
         // Panggil filter awal agar Dropdown Murid terisi semua
         filterMurid('mengaji');
+        filterMurid('hafalan');
         
         muatDashboard();
       } else { msg.innerText = res.message; msg.classList.remove('hidden'); }
@@ -348,5 +403,6 @@
   </script>
 </body>
 </html>
+
 
 
