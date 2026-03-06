@@ -11,11 +11,47 @@
     body { font-family: 'Inter', sans-serif; }
     .loader { border: 3px solid #f3f3f3; border-radius: 50%; border-top: 3px solid #2563eb; width: 20px; height: 20px; animation: spin 1s linear infinite; display: inline-block; }
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    
+    /* PENGATURAN KHUSUS CETAK PDF / PRINTER */
     @media print {
-      body * { visibility: hidden; }
-      #print-area, #print-area * { visibility: visible; }
-      #print-area { position: absolute; left: 0; top: 0; width: 100%; }
-      .no-print { display: none !important; }
+      /* 1. Paksa body dan container utama agar tidak terpotong (Reset Tailwind) */
+      html, body, #main-section, main {
+        height: auto !important;
+        overflow: visible !important;
+        background-color: white !important;
+      }
+      
+      /* 2. Sembunyikan semua elemen di layar */
+      body * { 
+        visibility: hidden; 
+      }
+      
+      /* 3. Tampilkan HANYA area yang memiliki kelas 'print-target' */
+      .print-target, .print-target * { 
+        visibility: visible; 
+      }
+      
+      /* 4. Posisikan area cetak pas di ujung kiri atas kertas */
+      .print-target { 
+        position: absolute; 
+        left: 0; 
+        top: 0; 
+        width: 100%; 
+        border: none !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+      }
+
+      /* 5. Sembunyikan elemen yang mengganggu (Sidebar, Header, tombol) */
+      header, aside, .no-print, button { 
+        display: none !important; 
+      }
+      
+      /* 6. Atur ukuran Margin Kertas (Opsional) */
+      @page { 
+        margin: 1.5cm; 
+      }
     }
   </style>
 </head>
@@ -517,6 +553,7 @@
   </script>
 </body>
 </html>
+
 
 
 
