@@ -81,8 +81,8 @@
 
           <div id="menu-admin-area" class="hidden">
             <p class="px-3 text-xs font-semibold text-rose-500 uppercase mb-2 mt-6">Admin Area</p>
-            <button onclick="pindahHalaman('data-murid', this); loadDataAdmin('muatDataMurid', 'tabel-murid')" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left hover:bg-white/5 hover:text-white transition"><i class="material-icons-round">people</i> Data Murid</button>
-            <button onclick="pindahHalaman('data-ustadz', this); loadDataAdmin('muatDataUstadz', 'tabel-ustadz')" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left hover:bg-white/5 hover:text-white transition"><i class="material-icons-round">person_add</i> Data Ustadz</button>
+            <button onclick="pindahHalaman('data-murid', this); muatDataMurid()" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left hover:bg-white/5 hover:text-white transition"><i class="material-icons-round">people</i> Data Murid</button>
+            <button onclick="pindahHalaman('data-ustadz', this); muatDataUstadz()" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left hover:bg-white/5 hover:text-white transition"><i class="material-icons-round">person_add</i> Data Ustadz</button>
           </div>
         </div>
         <div class="p-4 border-t border-slate-800">
@@ -420,7 +420,8 @@
 
     const daftarSurah = ["Al-Fatihah","Al-Baqarah","Ali 'Imran","An-Nisa'","Al-Ma'idah","Al-An'am","Al-A'raf","Al-Anfal","At-Taubah","Yunus","Hud","Yusuf","Ar-Ra'd","Ibrahim","Al-Hijr","An-Nahl","Al-Isra'","Al-Kahf","Maryam","Taha","Al-Anbiya'","Al-Hajj","Al-Mu'minun","An-Nur","Al-Furqan","Asy-Syu'ara'","An-Naml","Al-Qasas","Al-'Ankabut","Ar-Rum","Luqman","As-Sajdah","Al-Ahzab","Saba'","Fatir","Yasin","As-Saffat","Sad","Az-Zumar","Ghafir","Fussilat","Asy-Syura","Az-Zukhruf","Ad-Dukhan","Al-Jasiyah","Al-Ahqaf","Muhammad","Al-Fath","Al-Hujurat","Qaf","Az-Zariyat","At-Tur","An-Najm","Al-Qamar","Ar-Rahman","Al-Waqi'ah","Al-Hadid","Al-Mujadilah","Al-Hasyr","Al-Mumtahanah","As-Saff","Al-Jumu'ah","Al-Munafiqun","At-Taghabun","At-Talaq","At-Tahrim","Al-Mulk","Al-Qalam","Al-Haqqah","Al-Ma'arij","Nuh","Al-Jinn","Al-Muzzammil","Al-Muddassir","Al-Qiyamah","Al-Insan","Al-Mursalat","An-Naba'","An-Nazi'at","'Abasa","At-Takwir","Al-Infitar","Al-Mutaffifin","Al-Insyiqaq","Al-Buruj","At-Tariq","Al-A'la","Al-Ghasyiyah","Al-Fajr","Al-Balad","Asy-Syams","Al-Lail","Ad-Duha","Asy-Syarh","At-Tin","Al-'Alaq","Al-Qadr","Al-Bayyinah","Az-Zalzalah","Al-'Adiyat","Al-Qari'ah","At-Takasur","Al-'Asr","Al-Humazah","Al-Fil","Quraisy","Al-Ma'un","Al-Kausar","Al-Kafirun","An-Nasr","Al-Lahab","Al-Ikhlas","Al-Falaq","An-Nas"];
     
-    let APP_CACHE = { user: null, murid: [] };
+    // PERBAIKAN: Tambahkan ustadz ke dalam APP_CACHE
+    let APP_CACHE = { user: null, murid: [], ustadz: [] };
 
     window.onload = () => {
       const elSurah = document.getElementById('in-surah');
@@ -441,19 +442,19 @@
 
       const res = await fetchAPI('login', { u: u, p: p });
       if (res.success) {
-        APP_CACHE.user = { nama: res.nama, role: res.role }; APP_CACHE.murid = res.dataMurid;
+        APP_CACHE.user = { nama: res.nama, role: res.role }; 
+        APP_CACHE.murid = res.dataMurid || [];
+        
+        // PERBAIKAN: Simpan data ustadz dari backend
+        APP_CACHE.ustadz = res.dataUstadz || []; 
+        
         document.getElementById('ui-nama').innerText = res.nama; document.getElementById('ui-role').innerText = res.role;
         document.getElementById('login-section').classList.add('hidden'); document.getElementById('main-section').classList.remove('hidden');
 
-     
-        
-        
         // Atur Menu Admin
         if (res.role === "ADMIN") document.getElementById('menu-admin-area').classList.remove('hidden');
         else document.getElementById('menu-admin-area').classList.add('hidden');
 
-        // Isi Dropdown Murid
-        // Setup Filter Kelas Dinamis
         // Setup Filter Kelas Dinamis
         const unikKelas = [...new Set(APP_CACHE.murid.map(m => m.kelas))].sort();
         const opsiKelas = '<option value="">-- Semua Kelas --</option>' + unikKelas.map(k => `<option value="${k}">Kelas ${k}</option>`).join('');
@@ -556,24 +557,15 @@
       const nis = document.getElementById('sel-murid-lap-'+t).value; 
       if(!nis) return alert("Tampilkan data laporan santri terlebih dahulu sebelum mencetak!");
       
-      // 1. Kopi HTML dari tabel yang ingin dicetak
       const isiTabel = document.getElementById('print-area-'+t).innerHTML;
-      
-      // 2. Buat wadah baru (kertas kosong) di paling bawah aplikasi jika belum ada
       let wadahCetak = document.getElementById('wadah-cetak-khusus');
       if (!wadahCetak) {
         wadahCetak = document.createElement('div');
         wadahCetak.id = 'wadah-cetak-khusus';
         document.body.appendChild(wadahCetak);
       }
-      
-      // 3. Masukkan tabel tadi ke wadah khusus cetak
       wadahCetak.innerHTML = isiTabel;
-      
-      // 4. Perintahkan browser untuk mencetak sekarang
       window.print();
-      
-      // 5. Bersihkan kertasnya kembali setelah menu print tertutup
       wadahCetak.innerHTML = '';
     }
 
@@ -585,7 +577,7 @@
       }
     }
 
-  function filterMurid(t) {
+    function filterMurid(t) {
       const kelasPilihan = document.getElementById('filter-kelas-'+t).value;
       const selectMurid = document.getElementById('sel-murid-'+t);
       
@@ -597,7 +589,6 @@
       selectMurid.innerHTML = '<option value="">-- Pilih Santri --</option>' + 
         dataSaring.map(m => `<option value="${m.nis}">${m.nama} (${m.kelas})</option>`).join('');
         
-      // Sembunyikan riwayat saat kelas diganti
       const boxRiwayat = document.getElementById('riwayat-'+t);
       if(boxRiwayat) {
           boxRiwayat.classList.add('hidden');
@@ -605,98 +596,105 @@
       }
     }
 
+    // --- FUNGSI TAMBAHAN AGAR TIDAK ERROR SAAT MENGEDIT DATA ---
+    function showLoading(isLoading) {
+      if(isLoading) console.log("Sedang memuat data...");
+    }
+
     // --- MANAJEMEN MURID ---
+    function muatDataMurid() {
+      const container = document.getElementById('tabel-murid');
+      
+      // PERBAIKAN: Cek agar jika data kosong tidak error
+      if (!APP_CACHE.murid || APP_CACHE.murid.length === 0) {
+        container.innerHTML = `<tr><td colspan="4" class="px-6 py-4 text-center text-slate-500">Belum ada data murid</td></tr>`;
+        return;
+      }
 
-function muatDataMurid() {
-  const container = document.getElementById('tabel-murid');
-  container.innerHTML = APP_CACHE.murid.map(m => `
-    <tr class="hover:bg-slate-50">
-      <td class="px-6 py-4 font-mono font-medium text-blue-600">${m.nis}</td>
-      <td class="px-6 py-4 font-medium text-slate-800">${m.nama}</td>
-      <td class="px-6 py-4"><span class="bg-slate-100 px-2.5 py-1 rounded text-xs font-semibold uppercase">${m.kelas}</span></td>
-      <td class="px-6 py-4 text-center">
-        <button onclick="editMurid('${m.nis}', '${m.nama}', '${m.kelas}')" class="text-blue-600 hover:bg-blue-50 p-1.5 rounded-md mx-1"><i class="material-icons-round text-sm">edit</i></button>
-        <button onclick="hapusMurid('${m.nis}')" class="text-red-600 hover:bg-red-50 p-1.5 rounded-md mx-1"><i class="material-icons-round text-sm">delete</i></button>
-      </td>
-    </tr>
-  `).join('');
-}
+      container.innerHTML = APP_CACHE.murid.map(m => `
+        <tr class="hover:bg-slate-50">
+          <td class="px-6 py-4 font-mono font-medium text-blue-600">${m.nis}</td>
+          <td class="px-6 py-4 font-medium text-slate-800">${m.nama}</td>
+          <td class="px-6 py-4"><span class="bg-slate-100 px-2.5 py-1 rounded text-xs font-semibold uppercase">${m.kelas}</span></td>
+          <td class="px-6 py-4 text-center">
+            <button onclick="editMurid('${m.nis}', '${m.nama}', '${m.kelas}')" class="text-blue-600 hover:bg-blue-50 p-1.5 rounded-md mx-1"><i class="material-icons-round text-sm">edit</i></button>
+            <button onclick="hapusMurid('${m.nis}')" class="text-red-600 hover:bg-red-50 p-1.5 rounded-md mx-1"><i class="material-icons-round text-sm">delete</i></button>
+          </td>
+        </tr>
+      `).join('');
+    }
 
-async function prosesImportMurid(event) {
-  const file = event.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = async function(e) {
-    const baris = e.target.result.split('\n');
-    const dataImport = [];
-    for (let i = 1; i < baris.length; i++) { // Lewati header
-      const kolom = baris[i].split(',');
-      if (kolom.length >= 3) {
-        dataImport.push({ nis: kolom[0].trim(), nama: kolom[1].trim(), kelas: kolom[2].trim() });
+    async function prosesImportMurid(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = async function(e) {
+        const baris = e.target.result.split('\n');
+        const dataImport = [];
+        for (let i = 1; i < baris.length; i++) { 
+          const kolom = baris[i].split(',');
+          if (kolom.length >= 3) {
+            dataImport.push({ nis: kolom[0].trim(), nama: kolom[1].trim(), kelas: kolom[2].trim() });
+          }
+        }
+        if (dataImport.length > 0 && confirm(`Impor ${dataImport.length} murid?`)) {
+          showLoading(true);
+          const res = await fetchAPI('importSantri', { data: dataImport });
+          if (res.status === 'success') { alert("Berhasil!"); location.reload(); }
+          showLoading(false);
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    async function hapusMurid(nis) {
+      if (confirm("Hapus murid dengan NIS " + nis + "?")) {
+        showLoading(true);
+        const res = await fetchAPI('hapusSantri', { nis: nis });
+        if (res.status === 'success') location.reload();
+        showLoading(false);
       }
     }
-    if (dataImport.length > 0 && confirm(`Impor ${dataImport.length} murid?`)) {
-      showLoading(true);
-      const res = await fetchAPI('importSantri', { data: dataImport });
-      if (res.status === 'success') { alert("Berhasil!"); location.reload(); }
-      showLoading(false);
+
+    async function editMurid(nis, namaLama, kelasLama) {
+      const nama = prompt("Nama Baru:", namaLama);
+      const kelas = prompt("Kelas Baru:", kelasLama);
+      if (nama && kelas) {
+        showLoading(true);
+        const res = await fetchAPI('updateSantri', { nis, nama, kelas });
+        if (res.status === 'success') location.reload();
+        showLoading(false);
+      }
     }
-  };
-  reader.readAsText(file);
-}
 
-async function hapusMurid(nis) {
-  if (confirm("Hapus murid dengan NIS " + nis + "?")) {
-    showLoading(true);
-    const res = await fetchAPI('hapusSantri', { nis: nis });
-    if (res.status === 'success') location.reload();
-    showLoading(false);
-  }
-}
+    function tambahMuridManual() {
+      const nis = prompt("Masukkan NIS:");
+      if (nis) editMurid(nis, "", "");
+    }
 
-async function editMurid(nis, namaLama, kelasLama) {
-  const nama = prompt("Nama Baru:", namaLama);
-  const kelas = prompt("Kelas Baru:", kelasLama);
-  if (nama && kelas) {
-    showLoading(true);
-    const res = await fetchAPI('updateSantri', { nis, nama, kelas });
-    if (res.status === 'success') location.reload();
-    showLoading(false);
-  }
-}
+    // --- MANAJEMEN USTADZ ---
+    function muatDataUstadz() {
+      const container = document.getElementById('tabel-ustadz');
+      
+      // PERBAIKAN: Cek agar jika data kosong tidak error
+      if (!APP_CACHE.ustadz || APP_CACHE.ustadz.length === 0) {
+        container.innerHTML = `<tr><td colspan="4" class="px-6 py-4 text-center text-slate-500">Belum ada data ustadz</td></tr>`;
+        return;
+      }
 
-function tambahMuridManual() {
-  const nis = prompt("Masukkan NIS:");
-  if (nis) editMurid(nis, "", "");
-}
-
-// --- MANAJEMEN USTADZ ---
-
-function muatDataUstadz() {
-  const container = document.getElementById('tabel-ustadz');
-  // Pastikan data ustadz ada di APP_CACHE.ustadz
-  container.innerHTML = APP_CACHE.ustadz.map(u => `
-    <tr class="hover:bg-slate-50">
-      <td class="px-6 py-4 font-medium">${u.nama}</td>
-      <td class="px-6 py-4 text-slate-500">${u.username}</td>
-      <td class="px-6 py-4"><span class="text-xs font-bold uppercase">${u.role}</span></td>
-      <td class="px-6 py-4 text-center">
-        <button onclick="hapusUstadz('${u.username}')" class="text-red-600 hover:bg-red-50 p-1.5 rounded-md"><i class="material-icons-round text-sm">delete_forever</i></button>
-      </td>
-    </tr>
-  `).join('');
-}
+      container.innerHTML = APP_CACHE.ustadz.map(u => `
+        <tr class="hover:bg-slate-50">
+          <td class="px-6 py-4 font-medium">${u.nama}</td>
+          <td class="px-6 py-4 text-slate-500">${u.username}</td>
+          <td class="px-6 py-4"><span class="text-xs font-bold uppercase">${u.role}</span></td>
+          <td class="px-6 py-4 text-center">
+            <button onclick="hapusUstadz('${u.username}')" class="text-red-600 hover:bg-red-50 p-1.5 rounded-md"><i class="material-icons-round text-sm">delete_forever</i></button>
+          </td>
+        </tr>
+      `).join('');
+    }
     
     function logout() { if(confirm("Keluar dari aplikasi?")) location.reload(); }
   </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
