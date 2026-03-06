@@ -246,8 +246,14 @@
         else document.getElementById('menu-admin-area').classList.add('hidden');
 
         // Isi Dropdown Murid
-        const opts = '<option value="">-- Pilih Santri --</option>' + APP_CACHE.murid.map(m => `<option value="${m.nis}">${m.nama} (${m.kelas})</option>`).join('');
-        ['sel-murid-mengaji', 'sel-murid-hafalan', 'sel-lap-mengaji', 'sel-lap-hafalan'].forEach(id => document.getElementById(id).innerHTML = opts);
+        // Setup Filter Kelas Dinamis
+        const unikKelas = [...new Set(APP_CACHE.murid.map(m => m.kelas))].sort();
+        const opsiKelas = '<option value="">-- Semua Kelas --</option>' + unikKelas.map(k => `<option value="${k}">Kelas ${k}</option>`).join('');
+        if(document.getElementById('filter-kelas-mengaji')) document.getElementById('filter-kelas-mengaji').innerHTML = opsiKelas;
+
+        // Panggil filter awal agar Dropdown Murid terisi semua
+        filterMurid('mengaji');
+        
         muatDashboard();
       } else { msg.innerText = res.message; msg.classList.remove('hidden'); }
       btn.disabled = false; btn.innerHTML = `MASUK`;
@@ -318,8 +324,29 @@
       }
     }
 
+  function filterMurid(t) {
+      const kelasPilihan = document.getElementById('filter-kelas-'+t).value;
+      const selectMurid = document.getElementById('sel-murid-'+t);
+      
+      let dataSaring = APP_CACHE.murid;
+      if (kelasPilihan !== "") {
+        dataSaring = APP_CACHE.murid.filter(m => m.kelas === kelasPilihan);
+      }
+      
+      selectMurid.innerHTML = '<option value="">-- Pilih Santri --</option>' + 
+        dataSaring.map(m => `<option value="${m.nis}">${m.nama} (${m.kelas})</option>`).join('');
+        
+      // Sembunyikan riwayat saat kelas diganti
+      const boxRiwayat = document.getElementById('riwayat-'+t);
+      if(boxRiwayat) {
+          boxRiwayat.classList.add('hidden');
+          boxRiwayat.innerHTML = 'Terakhir: -';
+      }
+    }
+    
     function logout() { if(confirm("Keluar dari aplikasi?")) location.reload(); }
   </script>
 </body>
 </html>
+
 
