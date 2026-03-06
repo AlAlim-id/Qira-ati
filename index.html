@@ -59,8 +59,7 @@
       </div>
     </header>
 
-    <div class="flex-1 flex overflow-hidden">
-      <aside class="w-64 bg-slate-900 text-slate-300 flex flex-col shrink-0 transition-all">
+    <aside class="w-64 bg-slate-900 text-slate-300 flex flex-col shrink-0 transition-all z-10 no-print">
         <div class="flex-1 py-6 px-4 space-y-1 overflow-y-auto">
           <p class="px-3 text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Menu Utama</p>
           
@@ -81,6 +80,17 @@
           <button onclick="pindahHalaman('lap-hafalan', this)" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left hover:bg-white/5 hover:text-white transition">
             <i class="material-icons-round">assessment</i> Lap. Hafalan
           </button>
+
+          <div id="menu-admin-area" class="hidden">
+            <p class="px-3 text-xs font-semibold text-rose-500 uppercase tracking-wider mb-2 mt-6">Admin Area</p>
+            <button onclick="pindahHalaman('data-murid', this); loadTabelMurid()" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left hover:bg-white/5 hover:text-white transition">
+              <i class="material-icons-round">people</i> Data Murid
+            </button>
+            <button onclick="pindahHalaman('data-ustadz', this); loadTabelUstadz()" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left hover:bg-white/5 hover:text-white transition">
+              <i class="material-icons-round">person_add</i> Data Ustadz
+            </button>
+          </div>
+
         </div>
         <div class="p-4 border-t border-slate-800">
           <button onclick="logout()" class="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-left text-red-400 hover:bg-red-500/10 transition">
@@ -201,7 +211,14 @@
       if (res.success) {
         // Simpan ke Cache
         APP_CACHE.user = { nama: res.nama, role: res.role };
+        // Buka Kunci Menu Admin jika yang login adalah ADMIN
+        if (res.role === "ADMIN") {
+          document.getElementById('menu-admin-area').classList.remove('hidden');
+        } else {
+          document.getElementById('menu-admin-area').classList.add('hidden');
+        }
         APP_CACHE.murid = res.dataMurid; // Data murid sudah langsung tersimpan!
+        
 
         // Update UI
         document.getElementById('ui-nama').innerText = res.nama;
@@ -279,3 +296,4 @@
   </script>
 </body>
 </html>
+
