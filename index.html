@@ -607,7 +607,7 @@
 
     // --- MANAJEMEN MURID ---
 
-function muatTabelMurid() {
+function muatDataMurid() {
   const container = document.getElementById('tabel-murid');
   container.innerHTML = APP_CACHE.murid.map(m => `
     <tr class="hover:bg-slate-50">
@@ -672,7 +672,7 @@ function tambahMuridManual() {
 
 // --- MANAJEMEN USTADZ ---
 
-function muatTabelUstadz() {
+function muatDataUstadz() {
   const container = document.getElementById('tabel-ustadz');
   // Pastikan data ustadz ada di APP_CACHE.ustadz
   container.innerHTML = APP_CACHE.ustadz.map(u => `
@@ -691,6 +691,7 @@ function muatTabelUstadz() {
   </script>
 </body>
 </html>
+
 
 
 
