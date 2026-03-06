@@ -408,35 +408,35 @@
   </div>
 </div>
 
-        <div id="modal-murid" class="fixed inset-0 bg-slate-900/50 z-50 hidden flex items-center justify-center p-4 backdrop-blur-sm transition-all">
-          <div class="bg-white rounded-xl shadow-xl w-full max-w-md overflow-hidden">
-            <div class="px-6 py-4 border-b border-slate-200 flex justify-between items-center bg-slate-50">
-              <h3 id="modal-murid-title" class="font-bold text-lg text-slate-800">Tambah Data Murid</h3>
-              <button onclick="tutupModalMurid()" class="text-slate-400 hover:text-red-500 transition"><i class="material-icons-round">close</i></button>
-            </div>
-            
-            <form onsubmit="simpanMurid(event)" class="p-6 space-y-4">
-              <input type="hidden" id="murid-mode" value="tambah">
-              <div>
-                <label class="block text-sm font-medium text-slate-600 mb-1">Nomor Induk Santri (NIS)</label>
-                <input type="number" id="in-murid-nis" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none transition" required placeholder="Contoh: 12345">
-              </div>
-              <div>
-                <label class="block text-sm font-medium text-slate-600 mb-1">Nama Lengkap</label>
-                <input type="text" id="in-murid-nama" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none transition" required placeholder="Nama lengkap santri">
-              </div>
-              <div>
-                <label class="block text-sm font-medium text-slate-600 mb-1">Kelas</label>
-                <input type="text" id="in-murid-kelas" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none transition" required placeholder="Contoh: 1A">
-              </div>
-              
-              <div class="pt-4 flex gap-3 justify-end border-t border-slate-100 mt-6">
-                <button type="button" onclick="tutupModalMurid()" class="px-5 py-2.5 text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-lg font-medium transition">Batal</button>
-                <button type="submit" id="btn-simpan-murid" class="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition flex justify-center items-center">Simpan Data</button>
-              </div>
-            </form>
-          </div>
-        </div>
+        <div id="modal-murid" class="fixed inset-0 bg-slate-900/50 z-50 hidden flex items-center justify-center p-4 backdrop-blur-sm transition-opacity">
+  <div class="bg-white rounded-xl shadow-xl w-full max-w-md overflow-hidden transform transition-all">
+    <div class="px-6 py-4 border-b border-slate-200 flex justify-between items-center bg-slate-50">
+      <h3 id="modal-murid-title" class="font-bold text-lg text-slate-800">Tambah Data Murid</h3>
+      <button onclick="tutupModalMurid()" class="text-slate-400 hover:text-red-500 transition"><i class="material-icons-round">close</i></button>
+    </div>
+    
+    <form onsubmit="simpanMurid(event)" class="p-6 space-y-4">
+      <input type="hidden" id="murid-mode" value="tambah">
+      <div>
+        <label class="block text-sm font-medium text-slate-600 mb-1">Nomor Induk Santri (NIS)</label>
+        <input type="number" id="in-murid-nis" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none transition" required placeholder="Contoh: 1001">
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-slate-600 mb-1">Nama Lengkap</label>
+        <input type="text" id="in-murid-nama" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none transition" required placeholder="Contoh: Ahmad Fulan">
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-slate-600 mb-1">Kelas</label>
+        <input type="text" id="in-murid-kelas" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none transition" required placeholder="Contoh: 1A">
+      </div>
+      
+      <div class="pt-4 flex gap-3 justify-end border-t border-slate-100 mt-6">
+        <button type="button" onclick="tutupModalMurid()" class="px-5 py-2.5 text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-lg font-medium transition">Batal</button>
+        <button type="submit" id="btn-simpan-murid" class="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition flex justify-center items-center">Simpan Data</button>
+      </div>
+    </form>
+  </div>
+</div>
         
       </main>
     </div>
@@ -648,9 +648,10 @@
           <td class="px-6 py-4 font-medium text-slate-800">${m.nama}</td>
           <td class="px-6 py-4"><span class="bg-slate-100 px-2.5 py-1 rounded text-xs font-semibold uppercase">${m.kelas}</span></td>
           <td class="px-6 py-4 text-center">
-            <button onclick="bukaModalMurid('${m.nis}', '${m.nama}', '${m.kelas}')" class="text-blue-600 hover:bg-blue-50 p-1.5 rounded-md mx-1"><i class="material-icons-round text-sm">edit</i></button>
-            <button onclick="hapusMurid('${m.nis}')" class="text-red-600 hover:bg-red-50 p-1.5 rounded-md mx-1"><i class="material-icons-round text-sm">delete</i></button>
-          </td>
+   <button onclick="bukaModalMurid('${m.nis}', '${m.nama}', '${m.kelas}')" class="text-blue-600 hover:bg-blue-50 p-1.5 rounded-md mx-1"><i class="material-icons-round text-sm">edit</i></button>
+   
+   <button onclick="hapusMurid('${m.nis}')" class="text-red-600 hover:bg-red-50 p-1.5 rounded-md mx-1"><i class="material-icons-round text-sm">delete</i></button>
+</td>
         </tr>
       `).join('');
     }
@@ -687,24 +688,27 @@
       }
     }
 
-    // --- MANAJEMEN MURID (POPUP MODAL) ---
+    // --- MANAJEMEN POPUP MODAL MURID ---
     function bukaModalMurid(nis = '', nama = '', kelas = '') {
       document.getElementById('modal-murid').classList.remove('hidden');
       document.getElementById('in-murid-nis').value = nis;
       document.getElementById('in-murid-nama').value = nama;
       document.getElementById('in-murid-kelas').value = kelas;
       
-      // Jika NIS ada isinya berarti mode Edit
+      const inputNis = document.getElementById('in-murid-nis');
+      
+      // Jika NIS ada isinya (berarti sedang Edit)
       if (nis !== '') {
         document.getElementById('modal-murid-title').innerText = 'Edit Data Murid';
         document.getElementById('murid-mode').value = 'edit';
-        document.getElementById('in-murid-nis').readOnly = true; // NIS tidak boleh diedit
-        document.getElementById('in-murid-nis').classList.add('bg-slate-100', 'text-slate-500');
+        inputNis.readOnly = true; // NIS tidak boleh diganti saat edit
+        inputNis.classList.add('bg-slate-100', 'text-slate-500');
       } else {
+        // Mode Tambah Baru
         document.getElementById('modal-murid-title').innerText = 'Tambah Data Murid';
         document.getElementById('murid-mode').value = 'tambah';
-        document.getElementById('in-murid-nis').readOnly = false;
-        document.getElementById('in-murid-nis').classList.remove('bg-slate-100', 'text-slate-500');
+        inputNis.readOnly = false;
+        inputNis.classList.remove('bg-slate-100', 'text-slate-500');
       }
     }
 
@@ -712,37 +716,38 @@
       document.getElementById('modal-murid').classList.add('hidden');
     }
 
+    // Fungsi kirim data ke Google Sheet saat tombol Simpan diklik
     async function simpanMurid(e) {
       e.preventDefault();
+      
       const mode = document.getElementById('murid-mode').value;
       const nis = document.getElementById('in-murid-nis').value;
       const nama = document.getElementById('in-murid-nama').value;
       const kelas = document.getElementById('in-murid-kelas').value;
       
       const btn = document.getElementById('btn-simpan-murid');
-      btn.innerHTML = '<span class="loader border-t-white w-4 h-4"></span>';
+      btn.innerHTML = '<span class="loader border-t-white w-4 h-4"></span>'; // animasi loading
       btn.disabled = true;
 
-      // Kirim ke Google Apps Script
-      const res = await fetchAPI('simpanSantri', { mode, nis, nama, kelas });
+      // Kirim ke backend (code.gs)
+      const res = await fetchAPI('simpanSantri', { mode: mode, nis: nis, nama: nama, kelas: kelas });
       
       if (res.success) {
-        // Langsung update data di layar tanpa perlu refresh halaman
+        // Update data di Frontend Cache agar langsung berubah tanpa loading halaman
         if (mode === 'tambah') {
-          APP_CACHE.murid.push({ id: '-', nis: nis, nama: nama, kelas: kelas });
+          APP_CACHE.murid.push({ id: res.id, nis: nis, nama: nama, kelas: kelas });
         } else {
-          const index = APP_CACHE.murid.findIndex(m => String(m.nis) === String(nis));
-          if (index !== -1) {
-            APP_CACHE.murid[index].nama = nama;
-            APP_CACHE.murid[index].kelas = kelas;
+          const idx = APP_CACHE.murid.findIndex(m => String(m.nis) === String(nis));
+          if (idx !== -1) {
+            APP_CACHE.murid[idx].nama = nama;
+            APP_CACHE.murid[idx].kelas = kelas;
           }
         }
         
-        // Urutkan ulang sesuai abjad dan render ulang tabelnya
+        // Urutkan ulang sesuai abjad dan refresh tabel
         APP_CACHE.murid.sort((a,b) => a.nama.localeCompare(b.nama));
         muatDataMurid();
         tutupModalMurid();
-        alert('Data murid berhasil disimpan!');
       } else {
         alert('Gagal: ' + res.message);
       }
@@ -777,4 +782,5 @@
   </script>
 </body>
 </html>
+
 
