@@ -9,9 +9,14 @@
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
   <style>
     body { font-family: 'Inter', sans-serif; }
-    /* Animasi Loading Spinner */
     .loader { border: 3px solid #f3f3f3; border-radius: 50%; border-top: 3px solid #2563eb; width: 20px; height: 20px; animation: spin 1s linear infinite; display: inline-block; }
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    @media print {
+      body * { visibility: hidden; }
+      #print-area, #print-area * { visibility: visible; }
+      #print-area { position: absolute; left: 0; top: 0; width: 100%; }
+      .no-print { display: none !important; }
+    }
   </style>
 </head>
 <body class="bg-slate-50 text-slate-800 h-screen overflow-hidden">
@@ -21,21 +26,12 @@
       <div class="bg-blue-600 px-6 py-8 text-center text-white">
         <i class="material-icons-round text-5xl mb-2">menu_book</i>
         <h2 class="text-2xl font-bold tracking-tight">QARA'A AL AZHAR</h2>
-        <p class="text-blue-200 text-sm mt-1">Sistem Pencatatan Ngaji & Hafalan</p>
       </div>
       <div class="p-8">
         <form onsubmit="handleLogin(event)" class="space-y-5">
-          <div>
-            <label class="block text-sm font-medium text-slate-600 mb-1">Username</label>
-            <input type="text" id="in-user" class="w-full px-4 py-3 rounded-lg bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Ketik username..." required>
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-slate-600 mb-1">Password</label>
-            <input type="password" id="in-pass" class="w-full px-4 py-3 rounded-lg bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Ketik password..." required>
-          </div>
-          <button type="submit" id="btn-login" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg shadow transition flex justify-center items-center gap-2 mt-2">
-            MASUK
-          </button>
+          <input type="text" id="in-user" class="w-full px-4 py-3 rounded-lg bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Username" required>
+          <input type="password" id="in-pass" class="w-full px-4 py-3 rounded-lg bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Password" required>
+          <button type="submit" id="btn-login" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg shadow transition flex justify-center items-center">MASUK</button>
         </form>
         <div id="msg-login" class="text-red-500 text-sm text-center mt-4 hidden"></div>
       </div>
@@ -45,123 +41,115 @@
   <div id="main-section" class="hidden w-full h-full flex flex-col">
     <header class="bg-white border-b border-slate-200 h-16 flex items-center justify-between px-6 shrink-0 z-20">
       <div class="flex items-center gap-3 text-blue-600">
-        <i class="material-icons-round text-2xl">menu_book</i>
-        <h1 class="text-xl font-bold text-slate-800">Qara'a <span class="text-blue-600 font-medium">App</span></h1>
+        <i class="material-icons-round text-2xl">menu_book</i><h1 class="text-xl font-bold text-slate-800">Qara'a <span class="text-blue-600 font-medium">App</span></h1>
       </div>
       <div class="flex items-center gap-4">
-        <div class="text-right hidden sm:block">
-          <p id="ui-nama" class="text-sm font-bold text-slate-800 leading-tight">Nama</p>
-          <p id="ui-role" class="text-xs font-medium text-slate-500">Role</p>
-        </div>
-        <div class="w-9 h-9 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center font-bold">
-          <i class="material-icons-round text-lg">person</i>
-        </div>
+        <div class="text-right"><p id="ui-nama" class="text-sm font-bold text-slate-800">Nama</p><p id="ui-role" class="text-xs font-medium text-slate-500">Role</p></div>
+        <div class="w-9 h-9 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center font-bold"><i class="material-icons-round text-lg">person</i></div>
       </div>
     </header>
 
-    <aside class="w-64 bg-slate-900 text-slate-300 flex flex-col shrink-0 transition-all z-10 no-print">
+    <div class="flex-1 flex overflow-hidden">
+      
+      <aside class="w-64 bg-slate-900 text-slate-300 flex flex-col shrink-0 transition-all z-10 no-print">
         <div class="flex-1 py-6 px-4 space-y-1 overflow-y-auto">
-          <p class="px-3 text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Menu Utama</p>
+          <p class="px-3 text-xs font-semibold text-slate-500 uppercase mb-2">Menu Utama</p>
+          <button onclick="pindahHalaman('dashboard', this)" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left bg-blue-600/10 text-blue-400 font-medium transition"><i class="material-icons-round">dashboard</i> Dashboard</button>
+          <button onclick="pindahHalaman('mengaji', this)" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left hover:bg-white/5 hover:text-white transition"><i class="material-icons-round">history_edu</i> Input Mengaji</button>
+          <button onclick="pindahHalaman('hafalan', this)" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left hover:bg-white/5 hover:text-white transition"><i class="material-icons-round">stars</i> Input Hafalan</button>
           
-          <button onclick="pindahHalaman('dashboard', this)" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left bg-blue-600/10 text-blue-400 font-medium transition">
-            <i class="material-icons-round">dashboard</i> Dashboard
-          </button>
-          <button onclick="pindahHalaman('mengaji', this)" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left hover:bg-white/5 hover:text-white transition">
-            <i class="material-icons-round">history_edu</i> Input Mengaji
-          </button>
-          <button onclick="pindahHalaman('hafalan', this)" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left hover:bg-white/5 hover:text-white transition">
-            <i class="material-icons-round">stars</i> Input Hafalan
-          </button>
-          
-          <p class="px-3 text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2 mt-6">Laporan & Data</p>
-          <button onclick="pindahHalaman('lap-mengaji', this)" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left hover:bg-white/5 hover:text-white transition">
-            <i class="material-icons-round">assignment</i> Lap. Mengaji
-          </button>
-          <button onclick="pindahHalaman('lap-hafalan', this)" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left hover:bg-white/5 hover:text-white transition">
-            <i class="material-icons-round">assessment</i> Lap. Hafalan
-          </button>
+          <p class="px-3 text-xs font-semibold text-slate-500 uppercase mb-2 mt-6">Laporan & Data</p>
+          <button onclick="pindahHalaman('lap-mengaji', this)" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left hover:bg-white/5 hover:text-white transition"><i class="material-icons-round">assignment</i> Lap. Mengaji</button>
+          <button onclick="pindahHalaman('lap-hafalan', this)" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left hover:bg-white/5 hover:text-white transition"><i class="material-icons-round">assessment</i> Lap. Hafalan</button>
 
           <div id="menu-admin-area" class="hidden">
-            <p class="px-3 text-xs font-semibold text-rose-500 uppercase tracking-wider mb-2 mt-6">Admin Area</p>
-            <button onclick="pindahHalaman('data-murid', this); loadTabelMurid()" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left hover:bg-white/5 hover:text-white transition">
-              <i class="material-icons-round">people</i> Data Murid
-            </button>
-            <button onclick="pindahHalaman('data-ustadz', this); loadTabelUstadz()" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left hover:bg-white/5 hover:text-white transition">
-              <i class="material-icons-round">person_add</i> Data Ustadz
-            </button>
+            <p class="px-3 text-xs font-semibold text-rose-500 uppercase mb-2 mt-6">Admin Area</p>
+            <button onclick="pindahHalaman('data-murid', this); loadDataAdmin('muatDataMurid', 'tabel-murid')" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left hover:bg-white/5 hover:text-white transition"><i class="material-icons-round">people</i> Data Murid</button>
+            <button onclick="pindahHalaman('data-ustadz', this); loadDataAdmin('muatDataUstadz', 'tabel-ustadz')" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left hover:bg-white/5 hover:text-white transition"><i class="material-icons-round">person_add</i> Data Ustadz</button>
           </div>
-
         </div>
         <div class="p-4 border-t border-slate-800">
-          <button onclick="logout()" class="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-left text-red-400 hover:bg-red-500/10 transition">
-            <i class="material-icons-round">logout</i> Keluar
-          </button>
+          <button onclick="logout()" class="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-left text-red-400 hover:bg-red-500/10 transition"><i class="material-icons-round">logout</i> Keluar</button>
         </div>
       </aside>
 
       <main class="flex-1 bg-slate-50 overflow-y-auto relative">
         
-        <div id="page-dashboard" class="page-content p-6 sm:p-8">
-          <div class="flex justify-between items-end mb-6">
-            <div>
-              <h2 class="text-2xl font-bold text-slate-800">Ringkasan Hari Ini</h2>
-              <p class="text-slate-500 text-sm mt-1">Statistik santri mingguan</p>
-            </div>
-            <button onclick="muatDashboard()" class="text-blue-600 hover:text-blue-800 flex items-center gap-1 text-sm font-medium bg-blue-50 px-3 py-1.5 rounded-lg">
-              <i class="material-icons-round text-sm">refresh</i> Refresh
-            </button>
-          </div>
-
-          <div id="dash-loading" class="flex flex-col items-center justify-center py-10 text-slate-400">
-            <div class="loader mb-3 border-blue-600 border-t-transparent"></div>
-            <p class="text-sm">Menarik data dari Google Sheets...</p>
-          </div>
-
+        <div id="page-dashboard" class="page-content p-6">
+          <div class="flex justify-between items-end mb-6"><div><h2 class="text-2xl font-bold text-slate-800">Dashboard</h2><p class="text-slate-500 text-sm">Statistik santri mingguan</p></div><button onclick="muatDashboard()" class="text-blue-600 font-medium bg-blue-50 px-3 py-1.5 rounded-lg">Refresh</button></div>
+          <div id="dash-loading" class="text-center py-10"><div class="loader"></div></div>
           <div id="dash-content" class="hidden">
-            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-              <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
-                <p class="text-slate-500 text-sm font-medium">Total Murid</p>
-                <h3 id="stat-murid" class="text-3xl font-bold text-slate-800 mt-1">0</h3>
-              </div>
-              <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
-                <p class="text-slate-500 text-sm font-medium">Total Ustaz</p>
-                <h3 id="stat-ustadz" class="text-3xl font-bold text-slate-800 mt-1">0</h3>
-              </div>
-              <div class="bg-white p-5 rounded-xl border border-blue-200 bg-blue-50/50 shadow-sm">
-                <p class="text-blue-600 text-sm font-medium">Sudah Setoran</p>
-                <h3 id="stat-sudah" class="text-3xl font-bold text-blue-700 mt-1">0</h3>
-              </div>
-              <div class="bg-white p-5 rounded-xl border border-red-200 bg-red-50/50 shadow-sm">
-                <p class="text-red-600 text-sm font-medium">Belum Setoran</p>
-                <h3 id="stat-belum" class="text-3xl font-bold text-red-700 mt-1">0</h3>
-              </div>
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+              <div class="bg-white p-5 rounded-xl border border-slate-200"><p class="text-slate-500 text-sm">Total Murid</p><h3 id="stat-murid" class="text-3xl font-bold mt-1">0</h3></div>
+              <div class="bg-white p-5 rounded-xl border border-slate-200"><p class="text-slate-500 text-sm">Total Ustaz</p><h3 id="stat-ustadz" class="text-3xl font-bold mt-1">0</h3></div>
+              <div class="bg-white p-5 rounded-xl border border-blue-200 bg-blue-50"><p class="text-blue-600 text-sm">Sudah Setoran</p><h3 id="stat-sudah" class="text-3xl font-bold text-blue-700 mt-1">0</h3></div>
+              <div class="bg-white p-5 rounded-xl border border-red-200 bg-red-50"><p class="text-red-600 text-sm">Belum Setoran</p><h3 id="stat-belum" class="text-3xl font-bold text-red-700 mt-1">0</h3></div>
             </div>
-
-            <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-              <div class="bg-slate-50 border-b border-slate-200 px-6 py-4">
-                <h3 class="font-semibold text-slate-800">Santri Belum Setoran Minggu Ini</h3>
-              </div>
-              <div class="overflow-x-auto">
-                <table class="w-full text-left text-sm text-slate-600">
-                  <thead class="bg-slate-50 text-slate-500 border-b border-slate-200">
-                    <tr>
-                      <th class="px-6 py-3 font-medium">NIS</th>
-                      <th class="px-6 py-3 font-medium">Nama Santri</th>
-                      <th class="px-6 py-3 font-medium">Kelas</th>
-                    </tr>
-                  </thead>
-                  <tbody id="dash-tabel" class="divide-y divide-slate-100">
-                    </tbody>
-                </table>
-              </div>
+            <div class="bg-white rounded-xl border border-slate-200 overflow-hidden">
+              <div class="bg-slate-50 px-6 py-4 border-b border-slate-200"><h3 class="font-semibold">Santri Belum Setoran Minggu Ini</h3></div>
+              <table class="w-full text-left text-sm text-slate-600"><thead class="bg-slate-50 text-slate-500 border-b"><tr><th class="px-6 py-3">NIS</th><th class="px-6 py-3">Nama Santri</th><th class="px-6 py-3">Kelas</th></tr></thead><tbody id="dash-tabel" class="divide-y divide-slate-100"></tbody></table>
             </div>
           </div>
         </div>
 
-        <div id="page-mengaji" class="page-content hidden p-6 sm:p-8"><h2 class="text-2xl font-bold text-slate-800">Halaman Input Mengaji (Segera Hadir di Tahap 2)</h2></div>
-        <div id="page-hafalan" class="page-content hidden p-6 sm:p-8"><h2 class="text-2xl font-bold text-slate-800">Halaman Input Hafalan (Segera Hadir di Tahap 2)</h2></div>
-        <div id="page-lap-mengaji" class="page-content hidden p-6 sm:p-8"><h2 class="text-2xl font-bold text-slate-800">Halaman Laporan Mengaji (Segera Hadir di Tahap 2)</h2></div>
-        <div id="page-lap-hafalan" class="page-content hidden p-6 sm:p-8"><h2 class="text-2xl font-bold text-slate-800">Halaman Laporan Hafalan (Segera Hadir di Tahap 2)</h2></div>
+        <div id="page-mengaji" class="page-content hidden p-6">
+          <h2 class="text-2xl font-bold text-slate-800 mb-6">Input Mengaji</h2>
+          <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label class="block text-sm font-medium text-slate-600 mb-1">Pilih Santri</label>
+              <select id="sel-murid-mengaji" class="w-full px-4 py-2 mb-3 rounded-lg border border-slate-300" onchange="cekRiwayat('mengaji')"><option value="">-- Pilih --</option></select>
+              <div id="riwayat-mengaji" class="text-sm bg-yellow-50 text-yellow-800 p-3 rounded-lg hidden">Terakhir: -</div>
+            </div>
+            <div class="space-y-3">
+              <div class="flex gap-2">
+                <select id="in-jilid" class="flex-1 px-4 py-2 rounded-lg border border-slate-300"><option>Jilid 1</option><option>Jilid 2</option><option>Jilid 3</option><option>Jilid 4</option><option>Jilid 5</option><option>Jilid 6</option><option>Al-Quran</option></select>
+                <input type="text" id="in-hal" class="w-24 px-4 py-2 rounded-lg border border-slate-300" placeholder="Hal">
+              </div>
+              <select id="in-hasil" class="w-full px-4 py-2 rounded-lg border border-slate-300"><option>LANCAR</option><option>MENGULANG</option></select>
+              <button onclick="simpanData('mengaji')" id="btn-mengaji" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 rounded-lg">SIMPAN SETORAN</button>
+            </div>
+          </div>
+          <div class="mt-6 bg-white p-6 rounded-xl border border-slate-200"><h3 class="font-semibold mb-4">Rekap Hari Ini</h3><table class="w-full text-left text-sm"><thead class="border-b"><tr><th class="py-2">Waktu</th><th>Nama</th><th>Jilid/Hal</th><th>Status</th></tr></thead><tbody id="rekap-mengaji"></tbody></table></div>
+        </div>
+
+        <div id="page-hafalan" class="page-content hidden p-6">
+          <h2 class="text-2xl font-bold text-slate-800 mb-6">Input Hafalan</h2>
+          <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label class="block text-sm font-medium text-slate-600 mb-1">Pilih Santri</label>
+              <select id="sel-murid-hafalan" class="w-full px-4 py-2 mb-3 rounded-lg border border-slate-300" onchange="cekRiwayat('hafalan')"><option value="">-- Pilih --</option></select>
+              <div id="riwayat-hafalan" class="text-sm bg-yellow-50 text-yellow-800 p-3 rounded-lg hidden">Terakhir: -</div>
+            </div>
+            <div class="space-y-3">
+              <div class="flex gap-2">
+                <select id="in-surah" class="flex-1 px-4 py-2 rounded-lg border border-slate-300"></select>
+                <input type="text" id="in-ayat" class="w-24 px-4 py-2 rounded-lg border border-slate-300" placeholder="Ayat">
+              </div>
+              <select id="in-predikat" class="w-full px-4 py-2 rounded-lg border border-slate-300"><option>Mumtaz</option><option>Jayyid Jiddan</option><option>Jayyid</option><option>Maqbul</option></select>
+              <button onclick="simpanData('hafalan')" id="btn-hafalan" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 rounded-lg">SIMPAN HAFALAN</button>
+            </div>
+          </div>
+          <div class="mt-6 bg-white p-6 rounded-xl border border-slate-200"><h3 class="font-semibold mb-4">Rekap Hari Ini</h3><table class="w-full text-left text-sm"><thead class="border-b"><tr><th class="py-2">Waktu</th><th>Nama</th><th>Surah/Ayat</th><th>Status</th></tr></thead><tbody id="rekap-hafalan"></tbody></table></div>
+        </div>
+
+        <div id="page-lap-mengaji" class="page-content hidden p-6">
+          <h2 class="text-2xl font-bold text-slate-800 mb-6 no-print">Laporan Mengaji</h2>
+          <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm no-print mb-6">
+            <div class="flex gap-4"><select id="sel-lap-mengaji" class="flex-1 px-4 py-2 rounded-lg border border-slate-300"><option value="">-- Pilih Santri --</option></select><button onclick="lihatLaporan('mengaji')" class="bg-blue-600 text-white px-6 rounded-lg font-semibold">Cari</button><button onclick="window.print()" class="bg-slate-800 text-white px-4 rounded-lg"><i class="material-icons-round mt-1">print</i></button></div>
+          </div>
+          <div id="print-area" class="bg-white p-6 rounded-xl border border-slate-200 hidden"><h3 class="font-bold text-center mb-4 uppercase text-lg" id="judul-lap-mengaji">LAPORAN MENGAJI</h3><table class="w-full text-left text-sm border-collapse border border-slate-300"><thead><tr class="bg-slate-100"><th class="border border-slate-300 px-4 py-2">TGL</th><th class="border border-slate-300 px-4 py-2">INFO</th><th class="border border-slate-300 px-4 py-2">HASIL</th><th class="border border-slate-300 px-4 py-2">PENGUJI</th></tr></thead><tbody id="body-lap-mengaji"></tbody></table></div>
+        </div>
+
+        <div id="page-lap-hafalan" class="page-content hidden p-6">
+          <h2 class="text-2xl font-bold text-slate-800 mb-6 no-print">Laporan Hafalan</h2>
+          <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm no-print mb-6">
+            <div class="flex gap-4"><select id="sel-lap-hafalan" class="flex-1 px-4 py-2 rounded-lg border border-slate-300"><option value="">-- Pilih Santri --</option></select><button onclick="lihatLaporan('hafalan')" class="bg-blue-600 text-white px-6 rounded-lg font-semibold">Cari</button><button onclick="window.print()" class="bg-slate-800 text-white px-4 rounded-lg"><i class="material-icons-round mt-1">print</i></button></div>
+          </div>
+          <div id="print-area" class="bg-white p-6 rounded-xl border border-slate-200 hidden"><h3 class="font-bold text-center mb-4 uppercase text-lg" id="judul-lap-hafalan">LAPORAN HAFALAN</h3><table class="w-full text-left text-sm border-collapse border border-slate-300"><thead><tr class="bg-slate-100"><th class="border border-slate-300 px-4 py-2">TGL</th><th class="border border-slate-300 px-4 py-2">SURAH (AYAT)</th><th class="border border-slate-300 px-4 py-2">PREDIKAT</th><th class="border border-slate-300 px-4 py-2">PENGUJI</th></tr></thead><tbody id="body-lap-hafalan"></tbody></table></div>
+        </div>
+
+        <div id="page-data-murid" class="page-content hidden p-6"><h2 class="text-2xl font-bold mb-6">Data Murid</h2><div class="bg-white rounded-xl border border-slate-200"><table class="w-full text-left text-sm"><thead class="bg-slate-50 border-b"><tr><th class="px-6 py-3">NIS</th><th class="px-6 py-3">NAMA</th><th class="px-6 py-3">KELAS</th></tr></thead><tbody id="tabel-murid" class="divide-y divide-slate-100"></tbody></table></div></div>
+        <div id="page-data-ustadz" class="page-content hidden p-6"><h2 class="text-2xl font-bold mb-6">Data Ustadz</h2><div class="bg-white rounded-xl border border-slate-200"><table class="w-full text-left text-sm"><thead class="bg-slate-50 border-b"><tr><th class="px-6 py-3">NAMA</th><th class="px-6 py-3">USERNAME</th><th class="px-6 py-3">ROLE</th></tr></thead><tbody id="tabel-ustadz" class="divide-y divide-slate-100"></tbody></table></div></div>
 
       </main>
     </div>
@@ -169,131 +157,115 @@
 
   <script>
     // ========================================================
-    // MASUKKAN URL WEB APP GOOGLE APPS SCRIPT ANDA DI SINI
+    // MASUKKAN URL WEB APP GOOGLE APPS SCRIPT ANDA DI BAWAH INI
     // ========================================================
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwGKXWFzDPCGBzXZs6q7bN95eUx4b7ZbCQ1JkhvGHrZRMUG5gqbeequJspmBlQxneE7/exec";
 
-    // GLOBAL CACHE (Data disimpan di RAM Browser agar sangat cepat)
-    let APP_CACHE = {
-      user: null,
-      murid: [] // Berisi ratusan murid yang hanya didownload 1x saat login
+    const daftarSurah = ["Al-Fatihah","Al-Baqarah","Ali 'Imran","An-Nisa'","Al-Ma'idah","Al-An'am","Al-A'raf","Al-Anfal","At-Taubah","Yunus","Hud","Yusuf","Ar-Ra'd","Ibrahim","Al-Hijr","An-Nahl","Al-Isra'","Al-Kahf","Maryam","Taha","Al-Anbiya'","Al-Hajj","Al-Mu'minun","An-Nur","Al-Furqan","Asy-Syu'ara'","An-Naml","Al-Qasas","Al-'Ankabut","Ar-Rum","Luqman","As-Sajdah","Al-Ahzab","Saba'","Fatir","Yasin","As-Saffat","Sad","Az-Zumar","Ghafir","Fussilat","Asy-Syura","Az-Zukhruf","Ad-Dukhan","Al-Jasiyah","Al-Ahqaf","Muhammad","Al-Fath","Al-Hujurat","Qaf","Az-Zariyat","At-Tur","An-Najm","Al-Qamar","Ar-Rahman","Al-Waqi'ah","Al-Hadid","Al-Mujadilah","Al-Hasyr","Al-Mumtahanah","As-Saff","Al-Jumu'ah","Al-Munafiqun","At-Taghabun","At-Talaq","At-Tahrim","Al-Mulk","Al-Qalam","Al-Haqqah","Al-Ma'arij","Nuh","Al-Jinn","Al-Muzzammil","Al-Muddassir","Al-Qiyamah","Al-Insan","Al-Mursalat","An-Naba'","An-Nazi'at","'Abasa","At-Takwir","Al-Infitar","Al-Mutaffifin","Al-Insyiqaq","Al-Buruj","At-Tariq","Al-A'la","Al-Ghasyiyah","Al-Fajr","Al-Balad","Asy-Syams","Al-Lail","Ad-Duha","Asy-Syarh","At-Tin","Al-'Alaq","Al-Qadr","Al-Bayyinah","Az-Zalzalah","Al-'Adiyat","Al-Qari'ah","At-Takasur","Al-'Asr","Al-Humazah","Al-Fil","Quraisy","Al-Ma'un","Al-Kausar","Al-Kafirun","An-Nasr","Al-Lahab","Al-Ikhlas","Al-Falaq","An-Nas"];
+    
+    let APP_CACHE = { user: null, murid: [] };
+
+    window.onload = () => {
+      const elSurah = document.getElementById('in-surah');
+      daftarSurah.forEach((s, i) => elSurah.innerHTML += `<option value="${s}">${i+1}. ${s}</option>`);
     };
 
-    // Fungsi Fetch ke Google Script
     async function fetchAPI(action, payload = {}) {
       payload.action = action;
-      try {
-        const response = await fetch(SCRIPT_URL, {
-          method: 'POST',
-          body: JSON.stringify(payload)
-        });
-        return await response.json();
-      } catch (error) {
-        console.error("API Error:", error);
-        return { success: false, message: "Koneksi ke server gagal." };
-      }
+      try { const res = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) }); return await res.json(); } 
+      catch (e) { return { success: false, message: "Koneksi ke server gagal." }; }
     }
 
-    // --- LOGIKA LOGIN ---
     async function handleLogin(e) {
       e.preventDefault();
-      const u = document.getElementById('in-user').value;
-      const p = document.getElementById('in-pass').value;
-      const btn = document.getElementById('btn-login');
-      const msg = document.getElementById('msg-login');
-
-      btn.disabled = true;
-      btn.innerHTML = `<div class="loader border-white border-t-transparent"></div>`;
-      msg.classList.add('hidden');
+      const u = document.getElementById('in-user').value, p = document.getElementById('in-pass').value;
+      const btn = document.getElementById('btn-login'), msg = document.getElementById('msg-login');
+      btn.disabled = true; btn.innerHTML = `<div class="loader border-white border-t-transparent"></div>`; msg.classList.add('hidden');
 
       const res = await fetchAPI('login', { u: u, p: p });
-
       if (res.success) {
-        // Simpan ke Cache
-        APP_CACHE.user = { nama: res.nama, role: res.role };
-        // Buka Kunci Menu Admin jika yang login adalah ADMIN
-        if (res.role === "ADMIN") {
-          document.getElementById('menu-admin-area').classList.remove('hidden');
-        } else {
-          document.getElementById('menu-admin-area').classList.add('hidden');
-        }
-        APP_CACHE.murid = res.dataMurid; // Data murid sudah langsung tersimpan!
+        APP_CACHE.user = { nama: res.nama, role: res.role }; APP_CACHE.murid = res.dataMurid;
+        document.getElementById('ui-nama').innerText = res.nama; document.getElementById('ui-role').innerText = res.role;
+        document.getElementById('login-section').classList.add('hidden'); document.getElementById('main-section').classList.remove('hidden');
         
+        // Atur Menu Admin
+        if (res.role === "ADMIN") document.getElementById('menu-admin-area').classList.remove('hidden');
+        else document.getElementById('menu-admin-area').classList.add('hidden');
 
-        // Update UI
-        document.getElementById('ui-nama').innerText = res.nama;
-        document.getElementById('ui-role').innerText = res.role;
-        
-        // Pindah Layar
-        document.getElementById('login-section').classList.add('hidden');
-        document.getElementById('main-section').classList.remove('hidden');
-        document.getElementById('in-pass').value = ''; // bersihkan password
-        
-        // Load data dashboard (yang butuh kalkulasi berat)
+        // Isi Dropdown Murid
+        const opts = '<option value="">-- Pilih Santri --</option>' + APP_CACHE.murid.map(m => `<option value="${m.nis}">${m.nama} (${m.kelas})</option>`).join('');
+        ['sel-murid-mengaji', 'sel-murid-hafalan', 'sel-lap-mengaji', 'sel-lap-hafalan'].forEach(id => document.getElementById(id).innerHTML = opts);
         muatDashboard();
-      } else {
-        msg.innerText = res.message;
-        msg.classList.remove('hidden');
-      }
-      btn.disabled = false;
-      btn.innerHTML = `MASUK`;
+      } else { msg.innerText = res.message; msg.classList.remove('hidden'); }
+      btn.disabled = false; btn.innerHTML = `MASUK`;
     }
 
-    // --- NAVIGASI ANTAR HALAMAN (INSTAN 0 DETIK) ---
-    function pindahHalaman(targetPage, btnElement) {
-      // Sembunyikan semua halaman
+    function pindahHalaman(page, btn) {
       document.querySelectorAll('.page-content').forEach(el => el.classList.add('hidden'));
-      // Tampilkan yang dipilih
-      document.getElementById('page-' + targetPage).classList.remove('hidden');
-
-      // Ubah warna menu Sidebar
-      document.querySelectorAll('.nav-btn').forEach(btn => {
-        btn.classList.remove('bg-blue-600/10', 'text-blue-400');
-        btn.classList.add('text-slate-300');
-      });
-      btnElement.classList.remove('text-slate-300');
-      btnElement.classList.add('bg-blue-600/10', 'text-blue-400');
-    }
-
-    // --- LOGIKA DASHBOARD ---
-    async function muatDashboard() {
-      document.getElementById('dash-content').classList.add('hidden');
-      document.getElementById('dash-loading').classList.remove('hidden');
-
-      const res = await fetchAPI('getDashboard');
+      document.getElementById('page-' + page).classList.remove('hidden');
+      document.querySelectorAll('.nav-btn').forEach(b => { b.classList.remove('bg-blue-600/10', 'text-blue-400'); b.classList.add('text-slate-300'); });
+      btn.classList.remove('text-slate-300'); btn.classList.add('bg-blue-600/10', 'text-blue-400');
       
+      if(page === 'mengaji' || page === 'hafalan') loadRekap(page);
+    }
+
+    async function muatDashboard() {
+      document.getElementById('dash-content').classList.add('hidden'); document.getElementById('dash-loading').classList.remove('hidden');
+      const res = await fetchAPI('getDashboard');
       if(res.success) {
-        document.getElementById('stat-murid').innerText = res.totalMurid;
-        document.getElementById('stat-ustadz').innerText = res.totalUstadz;
-        document.getElementById('stat-sudah').innerText = res.sudahMingguIni;
-        document.getElementById('stat-belum').innerText = res.belumMingguIni;
-
-        const tbody = document.getElementById('dash-tabel');
-        if(res.daftarBelum && res.daftarBelum.length > 0) {
-          tbody.innerHTML = res.daftarBelum.map(m => `
-            <tr class="hover:bg-slate-50 transition">
-              <td class="px-6 py-3 whitespace-nowrap">${m.nis}</td>
-              <td class="px-6 py-3 font-medium text-slate-800">${m.nama}</td>
-              <td class="px-6 py-3">${m.kelas}</td>
-            </tr>
-          `).join('');
-        } else {
-          tbody.innerHTML = `<tr><td colspan="3" class="px-6 py-8 text-center text-slate-500">Alhamdulillah, semua santri sudah setoran minggu ini! 🎉</td></tr>`;
-        }
-
-        document.getElementById('dash-loading').classList.add('hidden');
-        document.getElementById('dash-content').classList.remove('hidden');
+        document.getElementById('stat-murid').innerText = res.totalMurid; document.getElementById('stat-ustadz').innerText = res.totalUstadz;
+        document.getElementById('stat-sudah').innerText = res.sudahMingguIni; document.getElementById('stat-belum').innerText = res.belumMingguIni;
+        document.getElementById('dash-tabel').innerHTML = res.daftarBelum.length ? res.daftarBelum.map(m => `<tr class="hover:bg-slate-50"><td class="px-6 py-3">${m.nis}</td><td class="px-6 py-3 font-medium text-slate-800">${m.nama}</td><td class="px-6 py-3">${m.kelas}</td></tr>`).join('') : `<tr><td colspan="3" class="px-6 py-6 text-center text-slate-500">Semua santri sudah setoran.</td></tr>`;
+        document.getElementById('dash-loading').classList.add('hidden'); document.getElementById('dash-content').classList.remove('hidden');
       }
     }
 
-    function logout() {
-      if(confirm("Yakin ingin log keluar?")) {
-        APP_CACHE = { user: null, murid: [] }; // Bersihkan memori
-        document.getElementById('main-section').classList.add('hidden');
-        document.getElementById('login-section').classList.remove('hidden');
+    async function cekRiwayat(t) {
+      const nis = document.getElementById('sel-murid-'+t).value; if(!nis) return;
+      const res = await fetchAPI('ambilTerakhir', {nis: nis, tipe: t});
+      const bx = document.getElementById('riwayat-'+t); bx.classList.remove('hidden');
+      bx.innerHTML = res.ada ? `Terakhir: <b>${res.main}</b> Hal/Ayat <b>${res.sub}</b> (${res.status})` : "Belum ada riwayat";
+    }
+
+    async function simpanData(t) {
+      const nis = document.getElementById('sel-murid-'+t).value; if(!nis) return alert("Pilih santri!");
+      const m = APP_CACHE.murid.find(x => x.nis === nis);
+      const btn = document.getElementById('btn-'+t); btn.disabled = true; btn.innerText = "MENYIMPAN...";
+      
+      let obj = { nis: m.nis, nama_murid: m.nama };
+      if(t==='mengaji') { obj.jilid = document.getElementById('in-jilid').value; obj.halaman = document.getElementById('in-hal').value; obj.hasil = document.getElementById('in-hasil').value; }
+      else { obj.surah = document.getElementById('in-surah').value; obj.ayat = document.getElementById('in-ayat').value; obj.predikat = document.getElementById('in-predikat').value; }
+      
+      const res = await fetchAPI('simpanProgress', {obj: obj, tipe: t, ustadz: APP_CACHE.user.nama});
+      if(res.success) { alert("Berhasil disimpan!"); loadRekap(t); cekRiwayat(t); }
+      btn.disabled = false; btn.innerText = t==='mengaji' ? "SIMPAN SETORAN" : "SIMPAN HAFALAN";
+    }
+
+    async function loadRekap(t) {
+      const res = await fetchAPI('ambilRekapHariIni', {tipe: t});
+      document.getElementById('rekap-'+t).innerHTML = res.data.length ? res.data.map(d => `<tr class="border-b"><td class="py-2 text-slate-500">${d.waktu}</td><td class="font-medium text-slate-800">${d.nama}</td><td>${d.info1} (${d.info2})</td><td><span class="bg-slate-100 px-2 py-1 rounded text-xs">${d.status}</span></td></tr>`).join('') : `<tr><td colspan="4" class="py-4 text-center text-slate-400">Belum ada setoran hari ini</td></tr>`;
+    }
+
+    async function lihatLaporan(t) {
+      const nis = document.getElementById('sel-lap-'+t).value; if(!nis) return alert("Pilih Santri!");
+      const m = APP_CACHE.murid.find(x => x.nis === nis);
+      document.getElementById('judul-lap-'+t).innerText = `LAPORAN ${t.toUpperCase()} - ${m.nama}`;
+      document.getElementById('body-lap-'+t).innerHTML = '<tr><td colspan="4" class="p-4 text-center">Mencari data...</td></tr>';
+      document.getElementById('print-area').parentNode.classList.remove('hidden');
+      
+      const res = await fetchAPI('ambilLaporan', {nis: nis, tipe: t});
+      document.getElementById('body-lap-'+t).innerHTML = res.data.length ? res.data.map(d => `<tr><td class="border border-slate-300 px-4 py-2">${d.tglStr}</td><td class="border border-slate-300 px-4 py-2">${d.info}</td><td class="border border-slate-300 px-4 py-2">${d.status}</td><td class="border border-slate-300 px-4 py-2 text-xs">${d.penguji}</td></tr>`).join('') : `<tr><td colspan="4" class="p-4 text-center">Tidak ada data</td></tr>`;
+    }
+
+    async function loadDataAdmin(action, targetId) {
+      document.getElementById(targetId).innerHTML = '<tr><td colspan="3" class="px-6 py-4 text-center text-slate-500">Memuat data...</td></tr>';
+      const res = await fetchAPI(action);
+      if(res.success) {
+        document.getElementById(targetId).innerHTML = res.data.map(d => `<tr class="hover:bg-slate-50"><td class="px-6 py-3">${d.nis || d.nama}</td><td class="px-6 py-3">${d.nama || d.username}</td><td class="px-6 py-3">${d.kelas || d.role}</td></tr>`).join('');
       }
     }
+
+    function logout() { if(confirm("Keluar dari aplikasi?")) location.reload(); }
   </script>
 </body>
 </html>
-
